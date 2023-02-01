@@ -205,37 +205,42 @@ public class Help {
 
     public void addProductToOrder(int table, String order) {  //NE SE POLUCHAVA!!!
         ArrayList<Product> orderedProducts = orders.get(table);
-        if (orderedProducts.isEmpty()) {
-            for (Product product1 : products) {
-                if (product1.getBrandName().equals(order)) {
-                    orderedProducts.add(product1);
-                    orderedProducts.get(orderedProducts.size() - 1).setQuantity(0);
-                    break;
-                }
-            }
-        }
-        for (Product product : orderedProducts) {
-            if (!product.getBrandName().equals(order)) {
-                for (Product product1 : products) {
-                    if (product1.getBrandName().equals(order)) {
-                        orderedProducts.add(product1);
-                        orderedProducts.get(orderedProducts.size() - 1).setQuantity(0);
-                        break;
-                    }
-                }
+        Product orderedProduct = null;
+        int dub = 0;
+        int i;
+        int count = 0;
+        for (Product product : products) {
+            if (product.getBrandName().equals(order)) {
+                orderedProduct = product;
                 break;
             }
         }
-        for (Product product : orderedProducts) {
-            if (product.getBrandName().equals(order)) {
-                    if (product.getQuantity() == 0) {
-                        product.setQuantity(product.getServedQuantity());
-                    } else {
-                        product.setQuantity(product.getQuantity() + product.getServedQuantity());
+        if (orderedProducts.isEmpty()) {
+            orderedProducts.add(orderedProduct);
+            orderedProducts.get(0).setQuantity(orderedProducts.get(0).getServedQuantity());
+        } else {
+            for (i = 0; i < orderedProducts.size(); i++) {
+                if (orderedProducts.get(i).getBrandName().equals(order)) {
+                    count++;
+                    dub = i;
                     }
+                }
+            switch (count) {
+                case 0: {
+                    orderedProducts.add(orderedProduct);
+                    orderedProducts.get(i-1).setQuantity(orderedProducts.get(i-1).getServedQuantity());
+                    break;
+                }
+                case 1: {
+                    orderedProducts.get(dub).increaseQuantity();
+                    break;
+                }
+                case 2: {
+                    orderedProducts.remove(dub);
                     break;
                 }
             }
+        }
         decreaseProduct(order);
         orders.replace(table, orderedProducts);
     }
