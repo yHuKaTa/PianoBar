@@ -12,9 +12,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class PayPanel extends BasePanel {
-    private ArrayList<Product> orderedProducts;
+    private final ArrayList<Product> orderedProducts;
     private final JRadioButton cash;
     private final JRadioButton creditCard;
     private final JRadioButton bankTransfer;
@@ -25,7 +26,7 @@ public class PayPanel extends BasePanel {
     private JTextField refundCashTextField;
     private double bill;
     private int discount;
-    private JTextField discountTextField = new JTextField("0");
+    private final JTextField discountTextField = new JTextField("0");
 
     public PayPanel(BarFrame frame, int tableNumber, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
         super(frame);
@@ -252,16 +253,17 @@ public class PayPanel extends BasePanel {
         JButton backButton = new JButton("Назад");
         backButton.setBounds(frame.getWidth() / 2 - 175, billTextField.getY() + 100, 120, 30);
         backButton.setHorizontalAlignment(SwingConstants.CENTER);
-        backButton.addActionListener(e -> {
-            frame.router.showOrdersPanel(loggedUser,tableNumber,orders);
-        });
+        backButton.addActionListener(e -> frame.router.showOrdersPanel(loggedUser,tableNumber,orders));
         add(backButton);
 
         JButton payButton = new JButton("Приключи");
         payButton.setBounds(frame.getWidth() / 2 + 50, billTextField.getY() + 100, 120, 30);
         payButton.setHorizontalAlignment(SwingConstants.CENTER);
         payButton.addActionListener(e -> {
-            if (showQuestionPopup("Желаете ли да приключите сметката?")) {
+            if (Objects.isNull(orderedProducts) || orderedProducts.isEmpty() || bill <= 0) {
+                JOptionPane.showMessageDialog(null,"Не може да приключите сметка без продукти","Невалидна сметка", JOptionPane.ERROR_MESSAGE);
+                frame.router.showOrdersPanel(loggedUser,tableNumber,orders);
+            } else if (showQuestionPopup("Желаете ли да приключите сметката?")) {
                 if (cash.isSelected()) {
                     if (Double.parseDouble(requestedCashTextField.getText()) - bill < 0) {
                         frame.router.showError("Не достатъчно дадена сума!");

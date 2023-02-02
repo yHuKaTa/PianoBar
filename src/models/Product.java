@@ -7,7 +7,7 @@ public class Product {
     private final double servedQuantity;
     private double quantity;
     private double price;
-    private boolean isLiquid;
+    private final boolean isLiquid;
     private boolean canDecrease;
 
     public Product(ProductType type, String subtype, String brandName,  double servedQuantity, double quantity, double price, boolean isLiquid) {
@@ -44,7 +44,7 @@ public class Product {
 
 
     public double getServedQuantity() {
-        return this.servedQuantity;
+        return Math.round((this.servedQuantity)*100.0)/100.0;
     }
 
 
@@ -53,15 +53,15 @@ public class Product {
     }
 
     public double getQuantity() {
-            return this.quantity;
+            return Math.round((this.quantity)*100.0)/100.0;
     }
 
     public void decreaseQuantity(){
-        this.quantity = (quantity - servedQuantity);
+        this.quantity = Math.round((quantity - servedQuantity)*100.0)/100.0;
     }
 
     public void increaseQuantity() {
-        this.quantity = (quantity + servedQuantity);
+        this.quantity = Math.round((quantity + servedQuantity)*100.0)/100.0;
     }
     public void addQuantity(double quantity) {
         this.quantity = this.quantity + quantity;
@@ -89,5 +89,9 @@ public class Product {
         } else {
             return "гр.";
         }
+    }
+    public Product clone(Product product) {
+        return new Product(product.type,product.subtype,product.brandName,
+                product.servedQuantity,product.quantity,product.price,product.isLiquid);
     }
 }

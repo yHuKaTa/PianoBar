@@ -51,6 +51,9 @@ public class Verification {
         return newTableNumber;
     }
 
+boolean isDeletingHimSelf(String pin, User user) {
+        return user.getPinCode().equals(pin);
+}
 
     boolean isPinDubt(String pin, ArrayList<User> users) {
         boolean isDubt = false;
