@@ -10,6 +10,7 @@ public class Product {
     private final boolean isLiquid;
     private boolean canDecrease; // for decrease principal
 
+
     public Product(ProductType type, String subtype, String brandName,  double servedQuantity, double quantity, double price, boolean isLiquid) {
         this.type = type;
         this.subtype = subtype;
