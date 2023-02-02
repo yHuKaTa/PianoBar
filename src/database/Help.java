@@ -36,7 +36,7 @@ public class Help {
         return products;
     }
     public ArrayList<Product> getOrderedProducts(int tableNumber) {
-        return orders.get(tableNumber - 1);
+        return orders.get(tableNumber);
     }
     public void loginSelect(String pin, BarFrame frame) {
         router = frame.router;
@@ -93,7 +93,7 @@ public class Help {
         }
     }
 
-    public void modifyUser(String pinOfUser) {
+    public void modifyUser(String pinOfUser, User loggedUser) {
         String name;
         String pin;
         String phoneNumber;
@@ -119,8 +119,12 @@ public class Help {
                             break;
                         }
                     case 1:
-                        user.setType(JOptionPane.showOptionDialog(null, "Избери тип потребител", "Тип потребител",
-                                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, userType, options[0]));
+                        if (pinOfUser.equals(loggedUser.getPinCode())){
+                            JOptionPane.showMessageDialog(null, "Не може да променяте типа си", "Вие сте собственик", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            user.setType(JOptionPane.showOptionDialog(null, "Избери тип потребител", "Тип потребител",
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, userType, options[0]));
+                        }
                         break;
                     case 2:
                         pin = JOptionPane.showInputDialog(null, "Въведи нов пин код:");
@@ -157,12 +161,12 @@ public class Help {
         }
     }
 
-    public void removeUser(String pinOfUser) {
+    public void removeUser(String pinOfUser, User loggedUser) {
         for (int i = 0; i < users.size(); i++) {
             if (pinOfUser.equals(users.get(i).getPinCode())) {
                 int result = JOptionPane.showConfirmDialog(null,"Сигурни ли сте в изтриването на служителя?");
                 if (result == JOptionPane.YES_OPTION) {
-                    if (verification.isPinDubt(pinOfUser, users)) {
+                    if (verification.isDeletingHimSelf(pinOfUser, loggedUser)) {
                         JOptionPane.showMessageDialog(null, "Не може да изтриете себе си", "Непозволено действие", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else {
@@ -177,9 +181,6 @@ public class Help {
     }
 
     public DefaultTableModel fetchUsers(DefaultTableModel userTableModel) {
-        if (userTableModel == null) {
-            userTableModel = new DefaultTableModel();
-        }
         userTableModel.setRowCount(0);
         if (searchedUsers.size() == users.size()) {
             for (User user : users) {
@@ -209,26 +210,27 @@ public class Help {
         int dub = 0;
         int i;
         int count = 0;
+        for (i = 0; i < orderedProducts.size(); i++) {
+            if (orderedProducts.get(i).getBrandName().equals(order)) {
+                count++;
+                dub = i;
+            }
+        }
         for (Product product : products) {
             if (product.getBrandName().equals(order)) {
-                orderedProduct = product;
-                break;
+                if (count == 0) {
+                    orderedProduct = product.clone(product);
+                    orderedProduct.setQuantity(product.getServedQuantity());
+                    break;
+                }
             }
         }
         if (orderedProducts.isEmpty()) {
             orderedProducts.add(orderedProduct);
-            orderedProducts.get(0).setQuantity(orderedProducts.get(0).getServedQuantity());
         } else {
-            for (i = 0; i < orderedProducts.size(); i++) {
-                if (orderedProducts.get(i).getBrandName().equals(order)) {
-                    count++;
-                    dub = i;
-                    }
-                }
             switch (count) {
                 case 0: {
                     orderedProducts.add(orderedProduct);
-                    orderedProducts.get(i-1).setQuantity(orderedProducts.get(i-1).getServedQuantity());
                     break;
                 }
                 case 1: {
@@ -249,6 +251,7 @@ public class Help {
         for (Product product : products) {
             if (product.getBrandName().equals(orderedProduct)) {
                 product.decreaseQuantity();
+                break;
             }
         }
     }
@@ -257,11 +260,12 @@ public class Help {
         for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()) {
             for (int i = 0; i < order.getValue().size(); i++) {
                 if (product.equalsIgnoreCase(order.getValue().get(i).getBrandName())) {
-                    if (orders.get(tableNumber).get(i).getQuantity() == order.getValue().get(i).getServedQuantity()) {
+                    if (orders.get(tableNumber).get(i).getQuantity() <= order.getValue().get(i).getServedQuantity()) {
                         orders.get(tableNumber).remove(i);
                     } else {
                         orders.get(tableNumber).get(i).decreaseQuantity();
                     }
+                    break;
                 }
             }
         }
@@ -272,6 +276,7 @@ public class Help {
         for (Product product1 : products){
             if (product1.getBrandName().equalsIgnoreCase(product)){
                 product1.increaseQuantity();
+                break;
             }
         }
     }
@@ -314,9 +319,7 @@ public class Help {
     }
 
     public void finishOrder(int tableNumber, double givenAmount, User waiter, ArrayList<Product> orderedProducts) {
-        for (Map.Entry<Integer, ArrayList<Order>> history : history.entrySet()) {
-            history.getValue().add(generateOrder(tableNumber, givenAmount, waiter, orderedProducts));
-        }
+        history.get(tableNumber).add(generateOrder(tableNumber, givenAmount, waiter, orderedProducts));
         workingUsers.remove(tableNumber);
         orders.replace(tableNumber, new ArrayList<>());
         router.showLoginPanel();

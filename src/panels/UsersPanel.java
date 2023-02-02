@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class UsersPanel extends BasePanel{
-    private DefaultTableModel userTableModel;
+    private DefaultTableModel userTableModel = new DefaultTableModel();
     private int currentlySelectedRow;
     private String pinOfUser;
     public UsersPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
@@ -75,14 +75,17 @@ public class UsersPanel extends BasePanel{
         JButton modifyButton = new JButton("Промени");
         modifyButton.setBounds(backButton.getX() + 230,frame.getHeight()- 80,120,30);
         modifyButton.addActionListener(e -> {
-            help.modifyUser(pinOfUser);
+            help.modifyUser(pinOfUser, loggedUser);
             userTableModel = help.fetchUsers(userTableModel);
         });
         add(modifyButton);
 
         JButton deleteButton = new JButton("Изтрий");
         deleteButton.setBounds(modifyButton.getX() + 230,frame.getHeight()- 80,120,30);
-        deleteButton.addActionListener(e -> help.removeUser(pinOfUser));
+        deleteButton.addActionListener(e -> {
+            help.removeUser(pinOfUser, loggedUser);
+            help.fetchUsers(userTableModel);
+        });
         add(deleteButton);
 
     }
