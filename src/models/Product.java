@@ -8,7 +8,7 @@ public class Product {
     private double quantity;
     private double price;
     private final boolean isLiquid;
-    private boolean canDecrease;
+    private boolean canDecrease; //fix Decreasing for products with verify
 
     public Product(ProductType type, String subtype, String brandName,  double servedQuantity, double quantity, double price, boolean isLiquid) {
         this.type = type;
