@@ -56,7 +56,9 @@ public class OrdersPanel extends TablesPanel{
         JButton closeOrder = new JButton("Приключи");
         closeOrder.setBounds(frame.getWidth() - 145,5, 120, 30);
         closeOrder.setHorizontalAlignment(SwingConstants.CENTER);
-        closeOrder.addActionListener(e -> frame.router.showPayPanel(tableNumber,loggedUser, orders));
+        closeOrder.addActionListener(e -> {frame.router.showPayPanel(tableNumber,loggedUser, orders);
+
+        });
         add(closeOrder);
 
         String[] cols = {"Продукт", "Количество", "Цена"};

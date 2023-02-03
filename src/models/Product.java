@@ -10,6 +10,7 @@ public class Product {
     private final boolean isLiquid;
     private boolean canDecrease; // for decrease principal
 
+    private double lastOrderedQuantity;
 
     public Product(ProductType type, String subtype, String brandName,  double servedQuantity, double quantity, double price, boolean isLiquid) {
         this.type = type;
@@ -91,6 +92,23 @@ public class Product {
             return "гр.";
         }
     }
+
+    public boolean isCanDecrease() {
+        return canDecrease;
+    }
+
+    public void setCanDecrease(boolean canDecrease) {
+        this.canDecrease = canDecrease;
+    }
+
+    public double getLastOrderedQuantity() {
+        return lastOrderedQuantity;
+    }
+
+    public void setLastOrderedQuantity(double lastOrderedQuantity) {
+        this.lastOrderedQuantity = lastOrderedQuantity;
+    }
+
     public Product clone(Product product) {
         return new Product(product.type,product.subtype,product.brandName,
                 product.servedQuantity,product.quantity,product.price,product.isLiquid);

@@ -45,9 +45,8 @@ public class TablesPanel extends BasePanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         selectedTable = ((JButton)e.getSource()).getText();
-        int tableNumber = Integer.parseInt(selectedTable);
-        help.tableNumber = tableNumber;
+        help.tableNumber = Integer.parseInt(selectedTable);
 
-        help.isWorkingOnTable(tableNumber, loggedUser);
+        help.isWorkingOnTable(Integer.parseInt(selectedTable), loggedUser);
     }
 }
