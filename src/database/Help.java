@@ -16,13 +16,14 @@ import models.UserType;
 public class Help {
     public int tableNumber;
     private BarRouter router;
-    public final Database database = new Database();
+    private final Database database = new Database();
     public final Verification verification = new Verification();
     private ArrayList<Product> products = Objects.requireNonNullElseGet(this.products, ArrayList::new);
     private LinkedHashMap<Integer, ArrayList<Product>> orders = Objects.requireNonNullElseGet(this.orders, LinkedHashMap::new);
-    LinkedHashMap<Integer, User> workingUsers = Objects.requireNonNullElseGet(this.workingUsers, LinkedHashMap::new);
+    private final LinkedHashMap<Integer, User> workingUsers = Objects.requireNonNullElseGet(this.workingUsers, LinkedHashMap::new);
     private ArrayList<User> users = Objects.requireNonNullElseGet(this.users, ArrayList::new);
     private final ArrayList<User> searchedUsers = new ArrayList<>(users);
+    public double lastProductQuantityOrdered;
     private LinkedHashMap<Integer, ArrayList<Order>> history = Objects.requireNonNullElseGet(this.history, LinkedHashMap::new);
 
     public Help() {
@@ -204,7 +205,7 @@ public class Help {
         return userTableModel;
     }
 
-    public void addProductToOrder(int table, String order) {  //NE SE POLUCHAVA!!!
+    public void addProductToOrder(int table, String order) {
         ArrayList<Product> orderedProducts = orders.get(table);
         Product orderedProduct = null;
         int dub = 0;
@@ -245,6 +246,12 @@ public class Help {
         }
         decreaseProduct(order);
         orders.replace(table, orderedProducts);
+        for (Product product : orders.get(table)) {
+            if (order.equals(product.getBrandName())) {
+                product.setCanDecrease(true);
+                break;
+            }
+        }
     }
 
     private void decreaseProduct(String orderedProduct) {
@@ -257,19 +264,25 @@ public class Help {
     }
 
     public void removeProductFromOrder(int tableNumber, String product) {
+        int productNumber = 0;
         for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()) {
             for (int i = 0; i < order.getValue().size(); i++) {
                 if (product.equalsIgnoreCase(order.getValue().get(i).getBrandName())) {
-                    if (orders.get(tableNumber).get(i).getQuantity() <= order.getValue().get(i).getServedQuantity()) {
-                        orders.get(tableNumber).remove(i);
-                    } else {
-                        orders.get(tableNumber).get(i).decreaseQuantity();
-                    }
+                    productNumber = i;
+                    if (order.getValue().get(i).isCanDecrease() && (order.getValue().get(i).getQuantity() > lastProductQuantityOrdered)) {
+                        if (orders.get(tableNumber).get(i).getQuantity() <= order.getValue().get(i).getServedQuantity()) {
+                          orders.get(tableNumber).remove(i);
+                        } else {
+                            orders.get(tableNumber).get(i).decreaseQuantity();
+                        }
                     break;
                 }
             }
         }
-        returnProductFromOrder(product);
+            if (order.getValue().get(productNumber).isCanDecrease() && (order.getValue().get(productNumber).getQuantity() > lastProductQuantityOrdered)) {
+                returnProductFromOrder(product);
+            }
+        }
     }
 
     private void returnProductFromOrder(String product) {
@@ -279,6 +292,10 @@ public class Help {
                 break;
             }
         }
+    }
+
+    public void lockDecreasingOfProducts() {
+
     }
 
     public DefaultTableModel fetchOrderedProducts(DefaultTableModel ordersTable) {
