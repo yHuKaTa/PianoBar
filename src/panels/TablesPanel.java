@@ -24,7 +24,10 @@ public class TablesPanel extends BasePanel implements ActionListener {
         JButton backButton = new JButton("Назад");
         backButton.setBounds(10,5, 120, 30);
         backButton.setHorizontalAlignment(SwingConstants.CENTER);
-        backButton.addActionListener(e -> help.showBackScreen(frame, loggedUser, orders));
+        backButton.addActionListener(e -> {
+            help.lockDecreasingOfProducts();
+            help.showBackScreen(frame, loggedUser, orders);
+        });
         add(backButton);
 
             int buttonX = 45;

@@ -289,13 +289,16 @@ public class Help {
         for (Product product1 : products){
             if (product1.getBrandName().equalsIgnoreCase(product)){
                 product1.increaseQuantity();
-                break;
             }
         }
     }
 
     public void lockDecreasingOfProducts() {
-
+            for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()) {
+                for (Product product : order.getValue()) {
+                    product.setCanDecrease(false);
+                }
+            }
     }
 
     public DefaultTableModel fetchOrderedProducts(DefaultTableModel ordersTable) {
