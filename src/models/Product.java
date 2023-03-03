@@ -11,6 +11,7 @@ public class Product {
     private boolean canDecrease; // for decrease principal
 
     private double lastOrderedQuantity;
+    private double lastConsumedQuantity;
 
     public Product(ProductType type, String subtype, String brandName,  double servedQuantity, double quantity, double price, boolean isLiquid) {
         this.type = type;
@@ -109,6 +110,12 @@ public class Product {
         this.lastOrderedQuantity = lastOrderedQuantity;
     }
 
+    public double getLastConsumedQuantity() {
+        return lastConsumedQuantity;
+    }
+    public void setLastConsumedQuantity(double lastConsumedQuantity) {
+        this.lastConsumedQuantity = lastConsumedQuantity;
+    }
     public Product clone(Product product) {
         return new Product(product.type,product.subtype,product.brandName,
                 product.servedQuantity,product.quantity,product.price,product.isLiquid);

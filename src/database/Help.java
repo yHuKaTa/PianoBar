@@ -23,7 +23,6 @@ public class Help {
     private final LinkedHashMap<Integer, User> workingUsers = Objects.requireNonNullElseGet(this.workingUsers, LinkedHashMap::new);
     private ArrayList<User> users = Objects.requireNonNullElseGet(this.users, ArrayList::new);
     private final ArrayList<User> searchedUsers = new ArrayList<>(users);
-    public double lastProductQuantityOrdered;
     private LinkedHashMap<Integer, ArrayList<Order>> history = Objects.requireNonNullElseGet(this.history, LinkedHashMap::new);
 
     public Help() {
@@ -236,6 +235,7 @@ public class Help {
                 }
                 case 1: {
                     orderedProducts.get(dub).increaseQuantity();
+                    orderedProducts.get(dub).setLastOrderedQuantity(orderedProducts.get(dub).getQuantity());
                     break;
                 }
                 case 2: {
@@ -265,26 +265,24 @@ public class Help {
 
     public void removeProductFromOrder(int tableNumber, String product) {
         int productNumber = 0;
-        for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()) {
-            if (order.getValue().size() == 0) {
-                continue;
-            }
-            for (int i = 0; i < order.getValue().size(); i++) {
-                if (product.equalsIgnoreCase(order.getValue().get(i).getBrandName())) {
+            for (int i = 0; i < orders.get(tableNumber).size(); i++) {
+                if (product.equalsIgnoreCase(orders.get(tableNumber).get(i).getBrandName())) {
                     productNumber = i;
-                    if (order.getValue().get(i).isCanDecrease() && (order.getValue().get(i).getQuantity() > lastProductQuantityOrdered)) {
-                        if (orders.get(tableNumber).get(i).getQuantity() <= order.getValue().get(i).getServedQuantity()) {
+                    if (!orders.get(tableNumber).get(i).isCanDecrease() || (orders.get(tableNumber).get(i).getLastOrderedQuantity() != 0 && orders.get(tableNumber).get(i).getLastOrderedQuantity() == orders.get(tableNumber).get(i).getLastConsumedQuantity())) {
+                        router.showError("Не може да понижавате количество! Вече е консумирано.");
+                        break;
+                    } else if (orders.get(tableNumber).get(i).isCanDecrease() && (orders.get(tableNumber).get(i).getQuantity() > orders.get(tableNumber).get(i).getLastConsumedQuantity())) {
+                        if (orders.get(tableNumber).get(i).getQuantity() <= orders.get(tableNumber).get(i).getServedQuantity()) {
                           orders.get(tableNumber).remove(i);
                           returnProductFromOrder(product);
                         } else {
                             orders.get(tableNumber).get(i).decreaseQuantity();
+                            orders.get(tableNumber).get(i).setLastOrderedQuantity(orders.get(tableNumber).get(i).getQuantity());
                             returnProductFromOrder(product);
                         }
                     break;
                 }
             }
-        }
-            break;
         }
     }
 
@@ -300,7 +298,9 @@ public class Help {
     public void lockDecreasingOfProducts() {
             for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()) {
                 for (Product product : order.getValue()) {
+                    product.setLastConsumedQuantity(product.getQuantity());
                     product.setCanDecrease(false);
+
                 }
             }
     }
