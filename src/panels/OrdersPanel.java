@@ -46,6 +46,7 @@ public class OrdersPanel extends TablesPanel{
             if (showQuestionPopup("Желаете ли да преместите поръчката на друга маса?")) {
                 help.moveOrder(this.tableNumber,help.verification.isValidNewTableNumber());
                 orderTableModel = help.fetchOrderedProducts(orderTableModel);
+                revalidate();
                 repaint();
             }
         }
@@ -90,8 +91,13 @@ public class OrdersPanel extends TablesPanel{
         removeFromOrder.setBounds(140,5, 150, 30);
         removeFromOrder.setHorizontalAlignment(SwingConstants.CENTER);
         removeFromOrder.addActionListener(e -> {
-            help.removeProductFromOrder(tableNumber,nameOfProduct);
-            orderTableModel = help.fetchOrderedProducts(orderTableModel);
+            if (nameOfProduct == null) {
+                frame.router.showError("Не сте избрали продукт!");
+            } else {
+                help.removeProductFromOrder(tableNumber, nameOfProduct);
+                orderTableModel = help.fetchOrderedProducts(orderTableModel);
+            }
+            nameOfProduct = null;
             }
         );
 
@@ -154,7 +160,8 @@ public class OrdersPanel extends TablesPanel{
                 buttonX = 0;
             }
         }
-        buttonsPane.repaint();
+        revalidate();
+        repaint();
     }
     private List<JButton> getProductButtons(String subtype){
         removeButtons();

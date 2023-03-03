@@ -266,22 +266,25 @@ public class Help {
     public void removeProductFromOrder(int tableNumber, String product) {
         int productNumber = 0;
         for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()) {
+            if (order.getValue().size() == 0) {
+                continue;
+            }
             for (int i = 0; i < order.getValue().size(); i++) {
                 if (product.equalsIgnoreCase(order.getValue().get(i).getBrandName())) {
                     productNumber = i;
                     if (order.getValue().get(i).isCanDecrease() && (order.getValue().get(i).getQuantity() > lastProductQuantityOrdered)) {
                         if (orders.get(tableNumber).get(i).getQuantity() <= order.getValue().get(i).getServedQuantity()) {
                           orders.get(tableNumber).remove(i);
+                          returnProductFromOrder(product);
                         } else {
                             orders.get(tableNumber).get(i).decreaseQuantity();
+                            returnProductFromOrder(product);
                         }
                     break;
                 }
             }
         }
-            if (order.getValue().get(productNumber).isCanDecrease() && (order.getValue().get(productNumber).getQuantity() > lastProductQuantityOrdered)) {
-                returnProductFromOrder(product);
-            }
+            break;
         }
     }
 
@@ -289,6 +292,7 @@ public class Help {
         for (Product product1 : products){
             if (product1.getBrandName().equalsIgnoreCase(product)){
                 product1.increaseQuantity();
+                break;
             }
         }
     }
