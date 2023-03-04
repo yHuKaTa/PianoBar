@@ -75,7 +75,11 @@ public class UsersPanel extends BasePanel{
         JButton modifyButton = new JButton("Промени");
         modifyButton.setBounds(backButton.getX() + 230,frame.getHeight()- 80,120,30);
         modifyButton.addActionListener(e -> {
+            if (pinOfUser == null) {
+                frame.router.showError("Не сте избрали потребител");
+            } else {
             help.modifyUser(pinOfUser, loggedUser);
+            }
             userTableModel = help.fetchUsers(userTableModel);
         });
         add(modifyButton);

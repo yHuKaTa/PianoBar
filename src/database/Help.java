@@ -1,5 +1,6 @@
 package database;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import frames.BarFrame;
@@ -78,6 +79,10 @@ public class Help {
                 workingUsers.replace(tableNumber, loggedUser);
             }
         }
+    }
+
+    public void showHistory(User loggedUser, int tableNumber) {
+        router.showOrderedProductPanel(loggedUser,orders,histories,tableNumber);
     }
 
     public void getSearchedUsers(String searchedUser) {
@@ -162,21 +167,29 @@ public class Help {
     }
 
     public void removeUser(String pinOfUser, User loggedUser) {
+        int remove = -1;
+        if (pinOfUser == null || pinOfUser.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Не сте избрали потребител", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         for (int i = 0; i < users.size(); i++) {
-            if (pinOfUser.equals(users.get(i).getPinCode())) {
-                int result = JOptionPane.showConfirmDialog(null,"Сигурни ли сте в изтриването на служителя?");
-                if (result == JOptionPane.YES_OPTION) {
-                    if (verification.isDeletingHimSelf(pinOfUser, loggedUser)) {
-                        JOptionPane.showMessageDialog(null, "Не може да изтриете себе си", "Непозволено действие", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    } else {
-                        users.remove(i);
-                        break;
+                if (pinOfUser.equals(users.get(i).getPinCode())) {
+                    int result = JOptionPane.showConfirmDialog(null, "Сигурни ли сте в изтриването на служителя?");
+                    if (result == JOptionPane.YES_OPTION) {
+                        if (verification.isDeletingHimSelf(pinOfUser, loggedUser)) {
+                            JOptionPane.showMessageDialog(null, "Не може да изтриете себе си", "Непозволено действие", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        } else {
+                            remove = i;
+                            break;
+                        }
                     }
-                } else {
-                    return;
                 }
             }
+        if (remove == -1) {
+            JOptionPane.showMessageDialog(null, "Не сте избрали потребител", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
+        } else {
+            users.remove(remove);
         }
     }
 
@@ -314,7 +327,7 @@ public class Help {
                     String[] row = new String[3];
                     row[0] = product.getBrandName();
                     row[1] = String.format("%,.2f", (product.getQuantity() * 1000)) + " " + product.getMeasure();
-                    row[2] = String.format("%,.2f", product.getPrice()) + " лв.";
+                    row[2] = String.format("%,.2f", product.getTotalPrice()) + " лв.";
                     ordersTable.addRow(row);
                 }
             }
@@ -325,13 +338,14 @@ public class Help {
     public double getBill(int tableNumber, int discount) {
         double bill = 0.00;
         for (Product orderedProduct : orders.get(tableNumber)) {
-            bill += orderedProduct.getPrice();
+            orderedProduct.setDiscount(discount);
+            bill += orderedProduct.getTotalPrice();
         }
-        return bill - ((discount * bill) / 100);
+        return bill;
     }
 
-    private Order generateOrder(int tableNumber, double givenAmount, User waiter, ArrayList<Product> orderedProducts) {
-        return new Order(tableNumber, givenAmount, waiter, orderedProducts);
+    private Order generateOrder( double givenAmount, User waiter, ArrayList<Product> orderedProducts, String methodOfPay) {
+        return new Order( givenAmount, waiter, orderedProducts,methodOfPay);
     }
 
     public void moveOrder(int oldTableNumber, int newTableNumber) {
@@ -340,10 +354,50 @@ public class Help {
         orders.replace(newTableNumber, movingOrder);
     }
 
-    public void finishOrder(int tableNumber, double givenAmount, User waiter, ArrayList<Product> orderedProducts) {
-        histories.get(tableNumber).add(generateOrder(tableNumber, givenAmount, waiter, orderedProducts));
+    public void finishOrder(double givenAmount, User waiter, ArrayList<Product> orderedProducts, String methodOfPay) {
+        histories.get(tableNumber).add(generateOrder( givenAmount, waiter, orderedProducts, methodOfPay));
         workingUsers.remove(tableNumber);
         orders.replace(tableNumber, new ArrayList<>());
         router.showLoginPanel();
     }
+
+    public DefaultTableModel fetchOrdersHistory(DefaultTableModel ordersHistoryTable,int tableNumber) {
+        if (ordersHistoryTable == null) {
+            ordersHistoryTable = new DefaultTableModel();
+        }
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        ordersHistoryTable.setRowCount(0);
+        for (int i = 0; i < histories.get(tableNumber).size(); i++) {
+            String[] row = new String[6];
+            row[0] = String.valueOf(i+1);
+            row[1] = format.format(histories.get(tableNumber).get(i).getDateOfOrder().getTime());
+            row[2] = histories.get(tableNumber).get(i).getWaiter().getUserName();
+            row[3] = histories.get(tableNumber).get(i).getMethodOfPay();
+            row[4] = String.format("%,.2f", histories.get(tableNumber).get(i).getTotalPrice()) + " лв.";
+            row[5] = String.format("%,.2f", histories.get(tableNumber).get(i).getGivenAmount()) + " лв.";
+            ordersHistoryTable.addRow(row);
+        }
+        return ordersHistoryTable;
+    }
+
+    public DefaultTableModel fetchProductsOfOrdersHistory(DefaultTableModel productsHistoryTable, int selectedOrder, int tableNumber) {
+        if (productsHistoryTable == null) {
+            productsHistoryTable = new DefaultTableModel();
+        }
+        for (Map.Entry<Integer, ArrayList<Order>> orders : histories.entrySet()) {
+            if (orders.getKey() == tableNumber) {
+                productsHistoryTable.setRowCount(0);
+                    for (Product product : orders.getValue().get(selectedOrder).getOrderedProducts()) {
+                        String[] row = new String[3];
+                        row[0] = product.getBrandName();
+                        row[1] = String.format("%,.2f", (product.getQuantity() * 1000)) + " " + product.getMeasure();
+                        row[2] = String.format("%,.2f", product.getTotalPrice()) + " лв.";
+                        productsHistoryTable.addRow(row);
+                    }
+                }
+                   break;
+                }
+        return productsHistoryTable;
+    }
+
 }

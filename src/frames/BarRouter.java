@@ -50,6 +50,11 @@ public class BarRouter{
         frame.setContentPane(historyPanel);
         frame.validate();
     }
+    public void showOrderedProductPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders,Map<Integer, ArrayList<Order>> histories, int tableNumber) {
+        OrderedProductPanel orderedProductPanel = new OrderedProductPanel(frame, loggedUser,orders, histories, tableNumber);
+        frame.setContentPane(orderedProductPanel);
+        frame.validate();
+    }
     public void showUsersPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders){
         UsersPanel usersPanel = new UsersPanel(frame,loggedUser, orders);
         frame.setContentPane(usersPanel);

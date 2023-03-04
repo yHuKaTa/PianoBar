@@ -26,7 +26,7 @@ public class PayPanel extends BasePanel {
     private JTextField refundCashTextField;
     private double bill;
     private int discount;
-    private final JTextField discountTextField = new JTextField("0");
+    private JTextField discountTextField = new JTextField("0.00");
 
     public PayPanel(BarFrame frame, int tableNumber, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
         super(frame);
@@ -83,7 +83,6 @@ public class PayPanel extends BasePanel {
         methodOfPay.add(creditCard);
         methodOfPay.add(bankTransfer);
 
-
         JLabel amountLabel = new JLabel("Сума за плащане");
         amountLabel.setBounds(frame.getWidth() / 2 - 250, cash.getY() + 50, 100, 20);
         amountLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -106,7 +105,7 @@ public class PayPanel extends BasePanel {
         discountTextField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (discountTextField.getText().equals("0")){
+                if (discountTextField.getText().equals("0.00")){
                     discountTextField.setText("");
                 }
             }
@@ -114,7 +113,7 @@ public class PayPanel extends BasePanel {
             @Override
             public void focusLost(FocusEvent e) {
                 if (discountTextField.getText().equals("")){
-                    discountTextField.setText("0");
+                    discountTextField.setText("0.00");
                 }
             }
         });
@@ -124,7 +123,7 @@ public class PayPanel extends BasePanel {
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
                 char key = e.getKeyChar();
-                if (!((Character.isDigit(key)) || key == KeyEvent.VK_BACK_SPACE || key == KeyEvent.VK_DELETE))
+                if (!((Character.isDigit(key)) || key == KeyEvent.VK_BACK_SPACE || key == KeyEvent.VK_DELETE || key == '.'))
                     e.consume();
             }
         });
@@ -134,6 +133,7 @@ public class PayPanel extends BasePanel {
             public void insertUpdate(DocumentEvent e) {
                 if (!(discountTextField.getText().isEmpty()) && Integer.parseInt(discountTextField.getText()) <= 20) {
                     discount = Integer.parseInt(discountTextField.getText());
+
                 } else {
                     discount = 0;
                 }
@@ -268,14 +268,22 @@ public class PayPanel extends BasePanel {
                     if (Double.parseDouble(requestedCashTextField.getText()) - bill < 0) {
                         frame.router.showError("Не достатъчно дадена сума!");
                     } else {
-                        help.finishOrder(tableNumber, Double.parseDouble(requestedCashTextField.getText()), loggedUser, orderedProducts);
+                        help.finishOrder( Double.parseDouble(requestedCashTextField.getText()), loggedUser, orderedProducts, methodOfPay());
                     }
                 } else {
-                    help.finishOrder(tableNumber, Double.parseDouble(requestedCashTextField.getText()), loggedUser, orderedProducts);
+                    help.finishOrder( Double.parseDouble(billTextField.getText()), loggedUser, orderedProducts, methodOfPay());
                 }
             }
         });
         add(payButton);
     }
-
+    private String methodOfPay() {
+        if (cash.isSelected()) {
+            return cash.getText();
+        } else if (creditCard.isSelected()) {
+            return creditCard.getText();
+        } else {
+            return bankTransfer.getText();
+        }
+    }
 }

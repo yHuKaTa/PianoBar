@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class HistoryPanel extends BasePanel implements ActionListener {
+    private User loggedUser;
     public HistoryPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders,Map<Integer, ArrayList<Order>> histories) {
         super(frame);
+        this.loggedUser = loggedUser;
         JButton backButton = new JButton("Назад");
         backButton.setBounds(10,5, 120, 30);
         backButton.setHorizontalAlignment(SwingConstants.CENTER);
@@ -38,6 +40,6 @@ public class HistoryPanel extends BasePanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String selectedTable = ((JButton) e.getSource()).getText();
-        help.tableNumber = Integer.parseInt(selectedTable);
+        help.showHistory(loggedUser, Integer.parseInt(selectedTable));
     }
 }
