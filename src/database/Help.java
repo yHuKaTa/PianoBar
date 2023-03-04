@@ -16,18 +16,18 @@ import models.UserType;
 public class Help {
     public int tableNumber;
     private BarRouter router;
-    private final Database database = new Database();
     public final Verification verification = new Verification();
     private ArrayList<Product> products = Objects.requireNonNullElseGet(this.products, ArrayList::new);
     private LinkedHashMap<Integer, ArrayList<Product>> orders = Objects.requireNonNullElseGet(this.orders, LinkedHashMap::new);
     private final LinkedHashMap<Integer, User> workingUsers = Objects.requireNonNullElseGet(this.workingUsers, LinkedHashMap::new);
     private ArrayList<User> users = Objects.requireNonNullElseGet(this.users, ArrayList::new);
     private final ArrayList<User> searchedUsers = new ArrayList<>(users);
-    private LinkedHashMap<Integer, ArrayList<Order>> history = Objects.requireNonNullElseGet(this.history, LinkedHashMap::new);
+    private LinkedHashMap<Integer, ArrayList<Order>> histories = Objects.requireNonNullElseGet(this.histories, LinkedHashMap::new);
 
     public Help() {
+        Database database = new Database();
         this.orders = database.getOrders(orders);
-        this.history = database.getHistory(history);
+        this.histories = database.getHistory(histories);
         this.users = database.importUsers(users);
         this.products = database.getProducts(products);
     }
@@ -41,9 +41,9 @@ public class Help {
     public void loginSelect(String pin, BarFrame frame) {
         router = frame.router;
         if (verification.loggedUser(pin, users).getType() == UserType.MANAGER) {
-            router.showManagersHomePanel(verification.loggedUser(pin, users), orders);
+            router.showManagersHomePanel(verification.loggedUser(pin, users), orders, histories);
         } else if (verification.loggedUser(pin, users).getType() == UserType.OWNER) {
-            router.showOwnersPanel(verification.loggedUser(pin, users), orders);
+            router.showOwnersPanel(verification.loggedUser(pin, users), orders, histories);
         } else if (verification.loggedUser(pin, users).getType() == UserType.WAITRESS) {
             router.showTablesPanel(verification.loggedUser(pin, users), orders);
         } else {
@@ -54,9 +54,9 @@ public class Help {
     public void showBackScreen(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
         router = frame.router;
         if (loggedUser.getType() == UserType.MANAGER) {
-            router.showManagersHomePanel(loggedUser, orders);
+            router.showManagersHomePanel(loggedUser, orders, histories);
         } else if (loggedUser.getType() == UserType.OWNER) {
-            router.showOwnersPanel(loggedUser, orders);
+            router.showOwnersPanel(loggedUser, orders, histories);
         } else {
             router.showLoginPanel();
         }
@@ -264,10 +264,8 @@ public class Help {
     }
 
     public void removeProductFromOrder(int tableNumber, String product) {
-        int productNumber = 0;
             for (int i = 0; i < orders.get(tableNumber).size(); i++) {
                 if (product.equalsIgnoreCase(orders.get(tableNumber).get(i).getBrandName())) {
-                    productNumber = i;
                     if (!orders.get(tableNumber).get(i).isCanDecrease() || (orders.get(tableNumber).get(i).getLastOrderedQuantity() != 0 && orders.get(tableNumber).get(i).getLastOrderedQuantity() == orders.get(tableNumber).get(i).getLastConsumedQuantity())) {
                         router.showError("Не може да понижавате количество! Вече е консумирано.");
                         break;
@@ -343,7 +341,7 @@ public class Help {
     }
 
     public void finishOrder(int tableNumber, double givenAmount, User waiter, ArrayList<Product> orderedProducts) {
-        history.get(tableNumber).add(generateOrder(tableNumber, givenAmount, waiter, orderedProducts));
+        histories.get(tableNumber).add(generateOrder(tableNumber, givenAmount, waiter, orderedProducts));
         workingUsers.remove(tableNumber);
         orders.replace(tableNumber, new ArrayList<>());
         router.showLoginPanel();
