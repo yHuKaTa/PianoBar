@@ -11,6 +11,8 @@ public class Product {
     private boolean canDecrease; // for decrease principal
 
     private double lastOrderedQuantity;
+    private double lastConsumedQuantity;
+    private int discount;
 
     public Product(ProductType type, String subtype, String brandName,  double servedQuantity, double quantity, double price, boolean isLiquid) {
         this.type = type;
@@ -69,18 +71,25 @@ public class Product {
         this.quantity = this.quantity + quantity;
     }
 
-    public double getPrice() { // Because servedQuantity
+    public double getPrice() {
+        return this.price;
+    }
+    public double getTotalPrice() { // Because of servedQuantity
+        int resulted = 100 - this.discount;
         if (this.type == ProductType.ALCOHOLIC){
-            return this.quantity * this.price * 20;
+            return (this.quantity * this.price * resulted * 20)/100;
         } else if (this.type == ProductType.FOOD || this.type == ProductType.COCKTAIL) {
-            return this.quantity * this.price * 5;
+            return (this.quantity * this.price * resulted * 5)/100;
         } else if (this.type == ProductType.NONALCOHOLIC) {
-            return this.quantity * this.price * 4;
+            return (this.quantity * this.price * resulted * 4)/100;
         } else {
-            return this.quantity * this.price * 5;
+            return (this.quantity * this.price * resulted * 5)/100;
         }
     }
 
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
     public void setPrice(double price) {
         this.price = price;
     }
@@ -109,6 +118,12 @@ public class Product {
         this.lastOrderedQuantity = lastOrderedQuantity;
     }
 
+    public double getLastConsumedQuantity() {
+        return lastConsumedQuantity;
+    }
+    public void setLastConsumedQuantity(double lastConsumedQuantity) {
+        this.lastConsumedQuantity = lastConsumedQuantity;
+    }
     public Product clone(Product product) {
         return new Product(product.type,product.subtype,product.brandName,
                 product.servedQuantity,product.quantity,product.price,product.isLiquid);

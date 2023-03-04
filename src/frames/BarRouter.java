@@ -1,5 +1,6 @@
 package frames;
 
+import models.Order;
 import models.Product;
 import models.User;
 import panels.*;
@@ -19,13 +20,13 @@ public class BarRouter{
         frame.setContentPane(loginPanel);
         frame.validate();
     }
-    public void showManagersHomePanel(User loggedUser, Map<Integer, ArrayList<Product>> orders){
-        ManagersHomePanel adminPanel = new ManagersHomePanel(frame, loggedUser, orders);
+    public void showManagersHomePanel(User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories){
+        ManagersHomePanel adminPanel = new ManagersHomePanel(frame, loggedUser, orders, histories);
         frame.setContentPane(adminPanel);
         frame.validate();
     }
-    public void showOwnersPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders){
-        OwnerHomePanel ownerHomePanel = new OwnerHomePanel(frame, loggedUser, orders);
+    public void showOwnersPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories){
+        OwnerHomePanel ownerHomePanel = new OwnerHomePanel(frame, loggedUser, orders, histories);
         frame.setContentPane(ownerHomePanel);
         frame.validate();
     }
@@ -42,6 +43,16 @@ public class BarRouter{
     public void showPayPanel(int tableNumber, User loggedUser,  Map<Integer, ArrayList<Product>> orders){
         PayPanel payPanel = new PayPanel(frame,tableNumber,loggedUser, orders);
         frame.setContentPane(payPanel);
+        frame.validate();
+    }
+    public void showHistoryPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders,Map<Integer, ArrayList<Order>> histories){
+        HistoryPanel historyPanel = new HistoryPanel(frame,loggedUser, orders, histories);
+        frame.setContentPane(historyPanel);
+        frame.validate();
+    }
+    public void showOrderedProductPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders,Map<Integer, ArrayList<Order>> histories, int tableNumber) {
+        OrderedProductPanel orderedProductPanel = new OrderedProductPanel(frame, loggedUser,orders, histories, tableNumber);
+        frame.setContentPane(orderedProductPanel);
         frame.validate();
     }
     public void showUsersPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders){
