@@ -7,6 +7,7 @@ import frames.BarFrame;
 import frames.BarRouter;
 
 import javax.swing.*;
+import javax.swing.plaf.PanelUI;
 import javax.swing.table.DefaultTableModel;
 
 import models.Order;
@@ -98,6 +99,49 @@ public class Help {
         }
     }
 
+    public void addUser(String nameOfUser, int userType, String pinOfUser, String phoneNumber) {
+        int count = 0;
+        if (nameOfUser.isEmpty() || nameOfUser.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Не може да създадете потребител без име!", "Въведете име", JOptionPane.ERROR_MESSAGE);
+            count++;
+        } else if (nameOfUser.trim().length() < 3) {
+            JOptionPane.showMessageDialog(null, "Минималното количество символи е 3! Въведи ново име", "Твърде кратъко име", JOptionPane.ERROR_MESSAGE);
+            count++;
+        } else if (verification.isNameDubt(nameOfUser.trim(),users)) {
+            JOptionPane.showMessageDialog(null, "Съществува дублиране на имена!", "Дублиране на имена", JOptionPane.ERROR_MESSAGE);
+            count++;
+        } else if (pinOfUser.isEmpty() || pinOfUser.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Не може да създадете потребител без пин код!", "Въведете пин код", JOptionPane.ERROR_MESSAGE);
+            count++;
+        } else if (pinOfUser.trim().length() < 4) {
+            JOptionPane.showMessageDialog(null, "Минималното количество символи е 4! Въведи нов пин код", "Твърде кратък пин код", JOptionPane.ERROR_MESSAGE);
+            count++;
+        } else if (verification.isPinDubt(pinOfUser.trim(), users)) {
+            JOptionPane.showMessageDialog(null, "Съществува дублиране на пин кодове!", "Дублиране на пин код", JOptionPane.ERROR_MESSAGE);
+            count++;
+        } else if (phoneNumber.isEmpty() || phoneNumber.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Не може да създадете потребител без телефонен номер!", "Въведете телефонен номер", JOptionPane.ERROR_MESSAGE);
+            count++;
+        } else if (phoneNumber.trim().length() < 4) {
+            JOptionPane.showMessageDialog(null, "Минималното количество символи е 4! Въведи нов телефонен номер", "Твърде кратък телефонен номер", JOptionPane.ERROR_MESSAGE);
+            count++;
+        } else if (verification.isPhoneNumberDubt(phoneNumber, users)) {
+            JOptionPane.showMessageDialog(null, "Съществува дублиране на телефонни номера!", "Дублиране на телефони", JOptionPane.ERROR_MESSAGE);
+            count++;
+        }
+        if (count == 0) {
+            if (userType == 1) {
+                users.add(new User(nameOfUser,pinOfUser,phoneNumber, UserType.MANAGER));
+            } else {
+                users.add(new User(nameOfUser, pinOfUser, phoneNumber, UserType.WAITRESS));
+            }
+            count--;
+        }
+        if (count == -1) {
+            JOptionPane.showMessageDialog(null, "Успешно създаден нов потребител!", "Добавен потребител", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
     public void modifyUser(String pinOfUser, User loggedUser) {
         String name;
         String pin;
@@ -109,20 +153,19 @@ public class Help {
                 switch (JOptionPane.showOptionDialog(null, "Какво ще се променя", "Избери какво ще се променя",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1])) {
                     case 0:
-                        name = JOptionPane.showInputDialog(null, "Въведи ново име");
-                        if (Objects.isNull(name)) {
-                            break;
-                        } else if (name.isEmpty()) {
+                        name = JOptionPane.showInputDialog(null, "Въведи ново име").replaceAll("[^a-zA-Zа-яА-Я ]","");
+                        if (name.isEmpty()) {
                             JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи име", JOptionPane.ERROR_MESSAGE);
-                            break;
+                        } else if (name.length() < 3) {
+                            JOptionPane.showMessageDialog(null, "Минималното количество символи е 3! Въведи ново име", "Твърде кратъко име", JOptionPane.ERROR_MESSAGE);
                         } else {
                             if (verification.isNameDubt(name,users)) {
                                 JOptionPane.showMessageDialog(null, "Има дублиране на имена", "Дублиране на имена", JOptionPane.ERROR_MESSAGE);
                             } else {
                                 user.setUserName(name);
                             }
-                            break;
                         }
+                        break;
                     case 1:
                         if (pinOfUser.equals(loggedUser.getPinCode())){
                             JOptionPane.showMessageDialog(null, "Не може да променяте типа си", "Вие сте собственик", JOptionPane.ERROR_MESSAGE);
@@ -132,35 +175,33 @@ public class Help {
                         }
                         break;
                     case 2:
-                        pin = JOptionPane.showInputDialog(null, "Въведи нов пин код:");
-                        if (Objects.isNull(pin)) {
-                            break;
-                        } else if (pin.isEmpty()) {
+                        pin = JOptionPane.showInputDialog(null, "Въведи нов пин код:").replaceAll("[^0-9]","");
+                        if (pin.isEmpty()) {
                             JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи пин", JOptionPane.ERROR_MESSAGE);
-                            break;
+                        } else if (pin.length() < 4) {
+                            JOptionPane.showMessageDialog(null, "Минималното количество символи е 4! Въведи нов пин код", "Твърде кратък пин код", JOptionPane.ERROR_MESSAGE);
                         } else {
                             if (verification.isPinDubt(pin,users)) {
                                 JOptionPane.showMessageDialog(null, "Има дублиране на пин кодове", "Дублиране на пин", JOptionPane.ERROR_MESSAGE);
                             } else {
                                 user.setPinCode(pin);
                             }
-                            break;
                         }
+                        break;
                     case 3:
-                        phoneNumber = JOptionPane.showInputDialog(null, "Въведи нов телефонен номер:");
-                        if (Objects.isNull(phoneNumber)) {
-                            break;
-                        } else if (phoneNumber.isEmpty()) {
+                        phoneNumber = JOptionPane.showInputDialog(null, "Въведи нов телефонен номер:").replaceAll("[^0-9 /-]","");
+                        if (phoneNumber.isEmpty()) {
                             JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи телефонен номер", JOptionPane.ERROR_MESSAGE);
-                            break;
+                        } else if (phoneNumber.length() < 4) {
+                            JOptionPane.showMessageDialog(null, "Минималното количество символи е 4! Въведи нов телефонен номер", "Твърде кратък телефонен номер", JOptionPane.ERROR_MESSAGE);
                         } else {
                             if (verification.isPhoneNumberDubt(phoneNumber, users)) {
                                 JOptionPane.showMessageDialog(null, "Има дублиране на телефонни номера", "Дублиране на телефонен номер", JOptionPane.ERROR_MESSAGE);
                             } else {
                                 user.setPhoneNumber(phoneNumber);
                             }
-                            break;
                         }
+                        break;
                 }
             }
         }
@@ -365,7 +406,7 @@ public class Help {
         if (ordersHistoryTable == null) {
             ordersHistoryTable = new DefaultTableModel();
         }
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         ordersHistoryTable.setRowCount(0);
         for (int i = 0; i < histories.get(tableNumber).size(); i++) {
             String[] row = new String[6];
