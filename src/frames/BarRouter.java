@@ -35,6 +35,11 @@ public class BarRouter{
         frame.setContentPane(tablesPanel);
         frame.validate();
     }
+    public void showDeliveryPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders){
+        DeliveryPanel deliveryPanel = new DeliveryPanel(frame, loggedUser, orders);
+        frame.setContentPane(deliveryPanel);
+        frame.validate();
+    }
     public void showOrdersPanel(User loggedUser, int tableNumber, Map<Integer, ArrayList<Product>> orders){
         OrdersPanel ordersPanel = new OrdersPanel(frame, loggedUser, tableNumber, orders);
         frame.setContentPane(ordersPanel);
@@ -61,6 +66,6 @@ public class BarRouter{
         frame.validate();
     }
     public void showError(String message) {
-        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, "Грешка", JOptionPane.ERROR_MESSAGE);
     }
 }

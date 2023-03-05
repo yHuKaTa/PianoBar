@@ -26,7 +26,12 @@ public class UsersPanel extends BasePanel{
         userTableModel = help.fetchUsers(userTableModel);
         userTableModel.setColumnIdentifiers(cols);
 
-        JTable table = new JTable(userTableModel);
+        JTable table = new JTable(userTableModel){
+            @Override
+            public boolean isCellEditable(int i, int b) {
+                return false;
+            }
+        };
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -144,11 +149,7 @@ public class UsersPanel extends BasePanel{
         JButton modifyButton = new JButton("Промени");
         modifyButton.setBounds(backButton.getX() + 200,frame.getHeight()- 80,120,30);
         modifyButton.addActionListener(e -> {
-            if (pinOfUser == null) {
-                frame.router.showError("Не сте избрали потребител");
-            } else {
             help.modifyUser(pinOfUser, loggedUser);
-            }
             userTableModel = help.fetchUsers(userTableModel);
         });
         add(modifyButton);
@@ -158,6 +159,7 @@ public class UsersPanel extends BasePanel{
         deleteButton.addActionListener(e -> {
             help.removeUser(pinOfUser, loggedUser);
             help.fetchUsers(userTableModel);
+            repaint();
         });
         add(deleteButton);
 
