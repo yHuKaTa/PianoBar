@@ -29,6 +29,18 @@ public class Product {
         this.type = type;
     }
 
+    public void setType(int type) {
+        if (type == 0) {
+            this.type = ProductType.ALCOHOLIC;
+        } else if (type == 1) {
+            this.type = ProductType.NONALCOHOLIC;
+        } else if (type == 2) {
+            this.type = ProductType.FOOD;
+        } else if (type == 3) {
+            this.type = ProductType.COCKTAIL;
+        }
+    }
+
     public String getSubtype() {
         return subtype;
     }

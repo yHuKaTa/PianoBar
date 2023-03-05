@@ -525,4 +525,59 @@ public class Help {
             }
         }
     }
+
+    public void modifyProduct(String nameOfProduct) {
+        int count = 0;
+        if (nameOfProduct == null || nameOfProduct.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Не сте избрали артикул!", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    }
+
+    public void deliveryOfProduct(String nameOfProduct) {
+        int count = 0;
+        double quantity = 0;
+        if (nameOfProduct == null || nameOfProduct.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Не сте избрали артикул!", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int result = JOptionPane.showConfirmDialog(null, "Сигурни ли сте в добавяне на количество към артикула?");
+        if (result == JOptionPane.YES_OPTION) {
+            for (Product product : products) {
+                if (product.getBrandName().equalsIgnoreCase(nameOfProduct)) {
+                    count++;
+                    String quantityString = JOptionPane.showInputDialog(null, "Въведи количество, което ще се добавя. Минимумът е 10 мл/гр.");
+                    if (quantityString == null) {
+                        return;
+                    }
+                    String str = quantityString.replaceAll("[^0-9.]","").trim();
+                    if (str.isEmpty() || Double.parseDouble(str) <= 0) {
+                        return;
+                    } else {
+                        quantity = (Double.parseDouble(str)/ 1000);
+                        if (quantity < 0.01) {
+                            JOptionPane.showMessageDialog(null, "Изисква се минимално количество от 10 мл/гр!", "Грешка", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        } else {
+                            int mod = JOptionPane.showConfirmDialog(null, String.format("Сигурни ли сте в добавяне на %s към количеството на артикула", str.concat(" " + product.getMeasure())));
+                            if (mod == JOptionPane.YES_OPTION) {
+                                count++;
+                                product.addQuantity(quantity);
+                                break;
+                            } else {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            if (count == 0) {
+                JOptionPane.showMessageDialog(null, "Не сте избрали артикул!", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+
+
+
 }

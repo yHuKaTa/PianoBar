@@ -20,24 +20,30 @@ public class BarRouter{
         frame.setContentPane(loginPanel);
         frame.validate();
     }
-    public void showManagersHomePanel(User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories){
+    public void showManagersHomePanel(User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories) {
         ManagersHomePanel adminPanel = new ManagersHomePanel(frame, loggedUser, orders, histories);
         frame.setContentPane(adminPanel);
         frame.validate();
     }
-    public void showOwnersPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories){
+    public void showOwnersPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories) {
         OwnerHomePanel ownerHomePanel = new OwnerHomePanel(frame, loggedUser, orders, histories);
         frame.setContentPane(ownerHomePanel);
         frame.validate();
     }
-    public void showTablesPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders){
+    public void showTablesPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders) {
         TablesPanel tablesPanel = new TablesPanel(frame, loggedUser, orders);
         frame.setContentPane(tablesPanel);
         frame.validate();
     }
-    public void showDeliveryPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders){
+    public void showDeliveryPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders) {
         DeliveryPanel deliveryPanel = new DeliveryPanel(frame, loggedUser, orders);
         frame.setContentPane(deliveryPanel);
+        frame.validate();
+    }
+
+    public void showProductAddingPanel(User loggedUser, Map<Integer, ArrayList<Product>> orders) {
+        NewProductPanel newProductPanel = new NewProductPanel(frame, loggedUser, orders);
+        frame.setContentPane(newProductPanel);
         frame.validate();
     }
     public void showOrdersPanel(User loggedUser, int tableNumber, Map<Integer, ArrayList<Product>> orders){
