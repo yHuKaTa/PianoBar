@@ -22,8 +22,7 @@ public class OwnerHomePanel extends BasePanel{
 
         JButton deliveryButton = new JButton("Доставки");
         deliveryButton.setBounds(frame.getWidth() / 2 - 75, tablesButton.getY() + 70, 150,40);
-//        Напиши екран за доставки
-//        deliveryButton.addActionListener();
+        deliveryButton.addActionListener(e -> frame.router.showDeliveryPanel(loggedUser, orders));
         add(deliveryButton);
 
         JButton historyButton = new JButton("История");

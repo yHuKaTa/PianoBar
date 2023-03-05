@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class HistoryPanel extends BasePanel implements ActionListener {
-    private User loggedUser;
+    private final User loggedUser;
     public HistoryPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders,Map<Integer, ArrayList<Order>> histories) {
         super(frame);
         this.loggedUser = loggedUser;

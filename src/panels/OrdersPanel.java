@@ -6,7 +6,9 @@ import models.User;
 import models.UserType;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -22,9 +24,9 @@ public class OrdersPanel extends TablesPanel{
     private int buttonY;
     private final JButton backCategory = new JButton("Върни назад");
     private final ArrayList<JButton> buttons = Objects.requireNonNullElseGet(this.buttons, ArrayList::new);
-    private final List<Product> products = help.getProducts();
+    private final ArrayList<Product> products;
     private final JScrollPane buttonsPane = Objects.requireNonNullElseGet(this.buttonsPane, JScrollPane::new);
-    private DefaultTableModel orderTableModel;
+    private DefaultTableModel orderTableModel = new DefaultTableModel();
     private int currentlySelectedRow;
     private String nameOfProduct;
 
@@ -32,6 +34,7 @@ public class OrdersPanel extends TablesPanel{
         super(frame,loggedUser, orders);
         this.tableNumber = tableNumber;
         this.loggedUser = loggedUser;
+        this.products = help.getProducts();
 
         JLabel waiterLabel = new JLabel("Сервитьор: " + loggedUser.getUserName() + " Маса: " + tableNumber);
         waiterLabel.setBounds((frame.getWidth()/2)-115,5, 220, 30);
@@ -46,7 +49,6 @@ public class OrdersPanel extends TablesPanel{
             if (showQuestionPopup("Желаете ли да преместите поръчката на друга маса?")) {
                 help.moveOrder(this.tableNumber,help.verification.isValidNewTableNumber());
                 orderTableModel = help.fetchOrderedProducts(orderTableModel);
-                revalidate();
                 repaint();
             }
         }
@@ -65,7 +67,14 @@ public class OrdersPanel extends TablesPanel{
         String[] cols = {"Продукт", "Количество", "Цена"};
         orderTableModel = help.fetchOrderedProducts(orderTableModel);
         orderTableModel.setColumnIdentifiers(cols);
-        JTable table = new JTable(orderTableModel);
+
+        JTable table = new JTable(orderTableModel){
+            @Override
+            public boolean isCellEditable(int i, int b) {
+                return false;
+            }
+
+        };
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -82,10 +91,7 @@ public class OrdersPanel extends TablesPanel{
 
         buttonsPane.setBounds(0,45,frame.getWidth()/2,frame.getHeight()/2+85);
         buttonsPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
         add(buttonsPane);
-        createButtons(getProductTypeButtons());
-
 
         JButton removeFromOrder = new JButton("Намали количество");
         removeFromOrder.setBounds(140,5, 150, 30);
@@ -102,7 +108,7 @@ public class OrdersPanel extends TablesPanel{
         );
 
         add(removeFromOrder);
-
+        createButtons(getProductTypeButtons());
     }
     private void removeButtons(){
         if (buttons != null) {
@@ -160,7 +166,6 @@ public class OrdersPanel extends TablesPanel{
                 buttonX = 0;
             }
         }
-        revalidate();
         repaint();
     }
     private List<JButton> getProductButtons(String subtype){

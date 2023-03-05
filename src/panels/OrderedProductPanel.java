@@ -15,8 +15,8 @@ import java.util.Map;
 public class OrderedProductPanel extends HistoryPanel{
     private int selectedOrder;
     private String workingUser;
-    private DefaultTableModel ordersTableModel;
-    private DefaultTableModel productsTableModel;
+    private DefaultTableModel ordersTableModel = new DefaultTableModel();
+    private DefaultTableModel productsTableModel = new DefaultTableModel();
     public OrderedProductPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories, int tableNumber) {
         super(frame, loggedUser, orders, histories);
 
@@ -28,7 +28,12 @@ public class OrderedProductPanel extends HistoryPanel{
         String[] cols = {"№ на поръчка", "Дата и час", "Сервитьор", "Метод на плащане", "Сума", "Взети пари"};
         ordersTableModel = help.fetchOrdersHistory(ordersTableModel, tableNumber);
         ordersTableModel.setColumnIdentifiers(cols);
-        JTable ordersTable = new JTable(ordersTableModel);
+        JTable ordersTable = new JTable(ordersTableModel){
+            @Override
+            public boolean isCellEditable(int i, int b) {
+                return false;
+            }
+        };
 
         ordersTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -62,7 +67,12 @@ public class OrderedProductPanel extends HistoryPanel{
         String[] cols = {"Продукт", "Количество", "Цена"};
         productsTableModel = help.fetchProductsOfOrdersHistory(productsTableModel, selectedOrder, tableNumber);
         productsTableModel.setColumnIdentifiers(cols);
-        JTable productsTable = new JTable(productsTableModel);
+        JTable productsTable = new JTable(productsTableModel){
+            @Override
+            public boolean isCellEditable(int i, int b) {
+                return false;
+            }
+        };
 
         JScrollPane productsTablePane = new JScrollPane(productsTable);
         productsTablePane.setBounds(0,220,frame.getWidth(),frame.getHeight() - 430);
