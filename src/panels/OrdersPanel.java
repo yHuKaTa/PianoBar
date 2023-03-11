@@ -6,15 +6,12 @@ import models.User;
 import models.UserType;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class OrdersPanel extends TablesPanel{
@@ -23,14 +20,14 @@ public class OrdersPanel extends TablesPanel{
     private int buttonX;
     private int buttonY;
     private final JButton backCategory = new JButton("Върни назад");
-    private final ArrayList<JButton> buttons = Objects.requireNonNullElseGet(this.buttons, ArrayList::new);
-    private final ArrayList<Product> products;
-    private final JScrollPane buttonsPane = Objects.requireNonNullElseGet(this.buttonsPane, JScrollPane::new);
+    private final List<JButton> buttons = new ArrayList<>();
+    private final List<Product> products;
+    private final JScrollPane buttonsPane = new JScrollPane();
     private DefaultTableModel orderTableModel = new DefaultTableModel();
     private int currentlySelectedRow;
     private String nameOfProduct;
 
-    public OrdersPanel(BarFrame frame, User loggedUser, int tableNumber, Map<Integer, ArrayList<Product>> orders){
+    public OrdersPanel(BarFrame frame, User loggedUser, int tableNumber, Map<Integer, List<Product>> orders){
         super(frame,loggedUser, orders);
         this.tableNumber = tableNumber;
         this.loggedUser = loggedUser;
@@ -65,8 +62,8 @@ public class OrdersPanel extends TablesPanel{
         add(closeOrder);
 
         String[] cols = {"Продукт", "Количество", "Цена"};
-        orderTableModel = help.fetchOrderedProducts(orderTableModel);
         orderTableModel.setColumnIdentifiers(cols);
+        orderTableModel = help.fetchOrderedProducts(orderTableModel);
 
         JTable table = new JTable(orderTableModel){
             @Override

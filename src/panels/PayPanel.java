@@ -8,14 +8,14 @@ import models.UserType;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class PayPanel extends BasePanel {
-    private final ArrayList<Product> orderedProducts;
+    private final List<Product> orderedProducts;
     private final JRadioButton cash;
     private final JRadioButton creditCard;
     private final JRadioButton bankTransfer;
@@ -28,7 +28,7 @@ public class PayPanel extends BasePanel {
     private int discount;
     private JTextField discountTextField = new JTextField("0.00");
 
-    public PayPanel(BarFrame frame, int tableNumber, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
+    public PayPanel(BarFrame frame, int tableNumber, User loggedUser, Map<Integer, List<Product>> orders) {
         super(frame);
         this.orderedProducts = help.getOrderedProducts(tableNumber);
         this.bill = help.getBill(tableNumber,discount);

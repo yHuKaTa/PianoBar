@@ -5,7 +5,7 @@ import models.*;
 import java.util.*;
 
 public class Database {
-    ArrayList<User> importUsers(ArrayList<User> users){
+    List<User> importUsers(List<User> users){
         if (users.isEmpty()){
         User owner = new User("Dimitar Enev","2525","0875555555", UserType.OWNER);
         User user1 = new User("Viktor Todorov","0101","08888888", UserType.MANAGER);
@@ -17,7 +17,7 @@ public class Database {
         }
     }
 
-    LinkedHashMap<Integer, ArrayList<Product>> getOrders(LinkedHashMap<Integer, ArrayList<Product>> orders){
+    Map<Integer, List<Product>> getOrders(Map<Integer, List<Product>> orders){
         for (int i = 1; i <= 20; i++) {
             if (orders.get(i) == null){
                 orders.put(i, new ArrayList<>());
@@ -29,7 +29,7 @@ public class Database {
     }
 
 
-    LinkedHashMap<Integer, ArrayList<Order>> getHistory(LinkedHashMap<Integer, ArrayList<Order>> historys){
+    Map<Integer, List<Order>> getHistory(Map<Integer, List<Order>> historys){
         for (int i = 1; i <= 20; i++) {
             if (historys.get(i) == null){
                 historys.put(i, new ArrayList<>());
@@ -40,7 +40,7 @@ public class Database {
         return historys;
     }
 
-    public ArrayList<Product> getProducts(ArrayList<Product> products){
+    public List<Product> getProducts(List<Product> products){
         if (products.isEmpty()) {
             Product blackRam = new Product(ProductType.ALCOHOLIC, "Уиски", "Black Ram", 0.05, 10, 2.8, true);
             Product redLabel = new Product(ProductType.ALCOHOLIC, "Уиски", "Jonny Walker Red Label", 0.05, 10, 3.2, true);

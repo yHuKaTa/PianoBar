@@ -11,7 +11,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DeliveryPanel extends BasePanel {
@@ -20,13 +20,13 @@ public class DeliveryPanel extends BasePanel {
     private int currentlySelectedRow;
     private String nameOfProduct;
 
-    public DeliveryPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
+    public DeliveryPanel(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders) {
         super(frame);
         this.loggedUser = loggedUser;
 
         String[] cols = {"Категория", "Подкатегория", "Име", "Цена", "Количество"};
-        productsTableModel = help.fetchDeliveryProducts(productsTableModel);
         productsTableModel.setColumnIdentifiers(cols);
+        productsTableModel = help.fetchDeliveryProducts(productsTableModel);
 
         JTable table = new JTable(productsTableModel){
             @Override

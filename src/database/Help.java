@@ -2,14 +2,11 @@ package database;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import frames.BarFrame;
 import frames.BarRouter;
 
 import javax.swing.*;
-import javax.swing.plaf.PanelUI;
 import javax.swing.table.DefaultTableModel;
 
 import models.Order;
@@ -20,14 +17,14 @@ import models.UserType;
 public class Help {
     public int tableNumber;
     private BarRouter router;
-    public final Verification verification = new Verification();
-    private ArrayList<Product> products = Objects.requireNonNullElseGet(this.products, ArrayList::new);
-    private ArrayList<Product> searchedProducts;
-    private LinkedHashMap<Integer, ArrayList<Product>> orders = Objects.requireNonNullElseGet(this.orders, LinkedHashMap::new);
-    private final LinkedHashMap<Integer, User> workingUsers = Objects.requireNonNullElseGet(this.workingUsers, LinkedHashMap::new);
-    private ArrayList<User> users = Objects.requireNonNullElseGet(this.users, ArrayList::new);
-    private final ArrayList<User> searchedUsers;
-    private LinkedHashMap<Integer, ArrayList<Order>> histories = Objects.requireNonNullElseGet(this.histories, LinkedHashMap::new);
+    public Verification verification = new Verification();
+    private List<Product> products = new ArrayList<>();
+    private final List<Product> searchedProducts;
+    private Map<Integer, List<Product>> orders = new LinkedHashMap<>();
+    private final Map<Integer, User> workingUsers = new HashMap<>();
+    private List<User> users = new ArrayList<>();
+    private final List<User> searchedUsers;
+    private Map<Integer, List<Order>> histories = new LinkedHashMap<>();
 
     public Help() {
         Database database = new Database();
@@ -35,15 +32,15 @@ public class Help {
         this.histories = database.getHistory(histories);
         this.users = database.importUsers(users);
         this.products = database.getProducts(products);
-        this.searchedUsers = (ArrayList<User>) users.clone();
-        this.searchedProducts = (ArrayList<Product>) products.clone();
+        this.searchedUsers = new ArrayList<>(users);
+        this.searchedProducts = new ArrayList<>(products);
     }
 
-    public ArrayList<Product> getProducts() {
+    public List<Product> getProducts() {
         return products;
     }
 
-    public ArrayList<Product> getOrderedProducts(int tableNumber) {
+    public List<Product> getOrderedProducts(int tableNumber) {
         return orders.get(tableNumber);
     }
 
@@ -60,7 +57,7 @@ public class Help {
         }
     }
 
-    public void showBackScreen(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
+    public void showBackScreen(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders) {
         router = frame.router;
         if (loggedUser.getType() == UserType.MANAGER) {
             router.showManagersHomePanel(loggedUser, orders, histories);
@@ -288,7 +285,7 @@ public class Help {
     }
 
     public void addProductToOrder(int table, String order) {
-        ArrayList<Product> orderedProducts = orders.get(table);
+        List<Product> orderedProducts = orders.get(table);
         Product orderedProduct = null;
         int dub = 0;
         int i;
@@ -377,7 +374,7 @@ public class Help {
     }
 
     public void lockDecreasingOfProducts() {
-        for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()) {
+        for (Map.Entry<Integer, List<Product>> order : orders.entrySet()) {
             for (Product product : order.getValue()) {
                 product.setLastConsumedQuantity(product.getQuantity());
                 product.setCanDecrease(false);
@@ -387,7 +384,7 @@ public class Help {
     }
 
     public DefaultTableModel fetchOrderedProducts(DefaultTableModel ordersTable) {
-        for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()) {
+        for (Map.Entry<Integer, List<Product>> order : orders.entrySet()) {
             if (order.getKey() == tableNumber) {
                 ordersTable.setRowCount(0);
                 for (Product product : order.getValue()) {
@@ -411,17 +408,17 @@ public class Help {
         return bill;
     }
 
-    private Order generateOrder(double givenAmount, User waiter, ArrayList<Product> orderedProducts, String methodOfPay) {
+    private Order generateOrder(double givenAmount, User waiter, List<Product> orderedProducts, String methodOfPay) {
         return new Order(givenAmount, waiter, orderedProducts, methodOfPay);
     }
 
     public void moveOrder(int oldTableNumber, int newTableNumber) {
-        ArrayList<Product> movingOrder = new ArrayList<>(orders.get(oldTableNumber));
+        List<Product> movingOrder = new ArrayList<>(orders.get(oldTableNumber));
         orders.replace(oldTableNumber, new ArrayList<>());
         orders.replace(newTableNumber, movingOrder);
     }
 
-    public void finishOrder(double givenAmount, User waiter, ArrayList<Product> orderedProducts, String methodOfPay) {
+    public void finishOrder(double givenAmount, User waiter, List<Product> orderedProducts, String methodOfPay) {
         histories.get(tableNumber).add(generateOrder(givenAmount, waiter, orderedProducts, methodOfPay));
         workingUsers.remove(tableNumber);
         orders.replace(tableNumber, new ArrayList<>());
@@ -445,7 +442,7 @@ public class Help {
     }
 
     public DefaultTableModel fetchProductsOfOrdersHistory(DefaultTableModel productsHistoryTable, int selectedOrder, int tableNumber) {
-        for (Map.Entry<Integer, ArrayList<Order>> orders : histories.entrySet()) {
+        for (Map.Entry<Integer, List<Order>> orders : histories.entrySet()) {
             if (orders.getKey() == tableNumber) {
                 productsHistoryTable.setRowCount(0);
                 for (Product product : orders.getValue().get(selectedOrder).getOrderedProducts()) {
@@ -546,7 +543,7 @@ public class Help {
             for (Product product : products) {
                 if (product.getBrandName().equalsIgnoreCase(nameOfProduct)) {
                     count++;
-                    String quantityString = JOptionPane.showInputDialog(null, "Въведи количество, което ще се добавя. Минимумът е 10 мл/гр.");
+                    String quantityString = JOptionPane.showInputDialog(null, "Въведи количество, което ще се добавя. Минимумът е 10 мл/гр. и се закръгля през 10 мл/гр");
                     if (quantityString == null) {
                         return;
                     }
@@ -556,7 +553,7 @@ public class Help {
                     } else {
                         quantity = (Double.parseDouble(str)/ 1000);
                         if (quantity < 0.01) {
-                            JOptionPane.showMessageDialog(null, "Изисква се минимално количество от 10 мл/гр!", "Грешка", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Изисква се минимално количество от 10 мл/гр и се закръгля през 10 мл/гр!", "Грешка", JOptionPane.ERROR_MESSAGE);
                             return;
                         } else {
                             int mod = JOptionPane.showConfirmDialog(null, String.format("Сигурни ли сте в добавяне на %s към количеството на артикула", str.concat(" " + product.getMeasure())));
