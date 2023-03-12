@@ -84,7 +84,7 @@ public class DeliveryPanel extends BasePanel {
         add(backButton);
 
         if (loggedUser.getType() == UserType.OWNER) {
-            JButton deleteButton = new JButton("Изтрий");
+            JButton deleteButton = new JButton("Изтрий ");
             deleteButton.setBounds(backButton.getX() + 150, frame.getHeight() - 80, 120, 30);
             deleteButton.setHorizontalAlignment(SwingConstants.CENTER);
             deleteButton.addActionListener(e -> {
@@ -92,19 +92,20 @@ public class DeliveryPanel extends BasePanel {
                 productsTableModel = help.fetchDeliveryProducts(productsTableModel);
             });
             add(deleteButton);
+
+
+            JButton modifyButton = new JButton("Промени");
+            modifyButton.setBounds(backButton.getX() + 300, frame.getHeight() - 80, 120, 30);
+            modifyButton.setHorizontalAlignment(SwingConstants.CENTER);
+            modifyButton.addActionListener(e -> {
+                help.modifyProduct(nameOfProduct);
+                productsTableModel = help.fetchDeliveryProducts(productsTableModel);
+            });
+            add(modifyButton);
         }
 
-        JButton modifyButton = new JButton("Промени");
-        modifyButton.setBounds(backButton.getX() + 300, frame.getHeight() - 80, 120, 30);
-        modifyButton.setHorizontalAlignment(SwingConstants.CENTER);
-        modifyButton.addActionListener(e -> {
-            help.modifyProduct(nameOfProduct);
-            productsTableModel = help.fetchDeliveryProducts(productsTableModel);
-        });
-        add(modifyButton);
-
         JButton deliveryButton = new JButton("Доставка");
-        deliveryButton.setBounds(modifyButton.getX() + 150, frame.getHeight() - 80, 120, 30);
+        deliveryButton.setBounds(backButton.getX() + 450, frame.getHeight() - 80, 120, 30);
         deliveryButton.setHorizontalAlignment(SwingConstants.CENTER);
         deliveryButton.addActionListener(e -> {
             help.deliveryOfProduct(nameOfProduct);

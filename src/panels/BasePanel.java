@@ -4,7 +4,7 @@ import database.Help;
 import frames.BarFrame;
 
 import javax.swing.*;
-import java.awt.Color;
+import java.awt.*;
 
 
 public class BasePanel extends JPanel {

@@ -9,10 +9,7 @@ import frames.BarRouter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import models.Order;
-import models.Product;
-import models.User;
-import models.UserType;
+import models.*;
 
 public class Help {
     public int tableNumber;
@@ -525,9 +522,89 @@ public class Help {
 
     public void modifyProduct(String nameOfProduct) {
         int count = 0;
+        String subCategory;
+        String brandName;
+        String totalQuantity;
+        String price;
         if (nameOfProduct == null || nameOfProduct.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Не сте избрали артикул!", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
             return;
+        }
+        for (Product product : products) {
+            if (nameOfProduct.equalsIgnoreCase(product.getBrandName())) {
+                count++;
+                String[] options = {"Категория", "Подкатегория", "Име", "Общо количество", "Цена"};
+                String[] productType = {ProductType.ALCOHOLIC.label, ProductType.NONALCOHOLIC.label, ProductType.FOOD.label, ProductType.COCKTAIL.label};
+                switch (JOptionPane.showOptionDialog(null, "Какво ще се променя", "Избери какво ще се променя",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null)) {
+                    case 0: {
+                        product.setType(JOptionPane.showOptionDialog(null, "Избери тип потребител", "Тип потребител",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, productType, options[3]));
+                        break;
+                    }
+                    case 1: {
+                        subCategory = JOptionPane.showInputDialog(null, "Въведи ново име на подкатегория: (без числа и символи)");
+                        if (Objects.isNull(subCategory)) {
+                            break;
+                        }
+                        subCategory = Objects.requireNonNull(subCategory).replaceAll("[^a-zA-Zа-яА-Я ]", "").trim();
+                        if (subCategory.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи име на подкатегория", JOptionPane.ERROR_MESSAGE);
+                        } else if (subCategory.length() < 3) {
+                            JOptionPane.showMessageDialog(null, "Минималното количество символи е 3! Въведи ново име на подкатегория", "Твърде кратъко име на подкатегория", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            product.setSubtype(subCategory);
+                        }
+                        break;
+                    }
+                    case 2: {
+                        brandName = JOptionPane.showInputDialog(null, "Въведи ново име на подкатегория: (без числа и символи)");
+                        if (Objects.isNull(brandName)) {
+                            break;
+                        }
+                        brandName = Objects.requireNonNull(brandName).replaceAll("[^a-zA-Zа-яА-Я ]", "").trim();
+                        if (brandName.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи име на продукт", JOptionPane.ERROR_MESSAGE);
+                        } else if (brandName.length() < 3) {
+                            JOptionPane.showMessageDialog(null, "Минималното количество символи е 3! Въведи ново име на продукт", "Твърде кратъко име на продукт", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            product.setBrandName(brandName);
+                        }
+                        break;
+                    }
+                    case 3: {
+                        totalQuantity = JOptionPane.showInputDialog(null, "Въведи ново общо количество: (само числа в л/кг.)");
+                        if (Objects.isNull(totalQuantity)) {
+                            break;
+                        }
+                        totalQuantity = Objects.requireNonNull(totalQuantity).replaceAll("[^(\\d+)||(\\.\\d+)$]", "").trim();
+                        if (totalQuantity.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи сервирано количество на продукт", JOptionPane.ERROR_MESSAGE);
+                        } else if (Double.parseDouble(totalQuantity) < 1) {
+                            JOptionPane.showMessageDialog(null, "Минималното количество е 1 л/кг! Въведи ново количество на продукт", "Твърде малко количество на продукт", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            product.setQuantity(Double.parseDouble(totalQuantity));
+                        }
+                        break;
+                    }
+                    case 4: {
+                        price = JOptionPane.showInputDialog(null, "Въведи нова цена:");
+                        if (Objects.isNull(price)) {
+                            break;
+                        }
+                        price = Objects.requireNonNull(price).replaceAll("[^(\\d+)||(\\.\\d+)$]", "").trim();
+                        if (price.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи цена на продукт", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            product.setPrice(Double.parseDouble(price));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        if(count == 0) {
+            JOptionPane.showMessageDialog(null, "Няма избран продукт!", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
         }
     }
 
