@@ -4,10 +4,10 @@ public class Product {
     private ProductType type;
     private String subtype;
     private String brandName;
-    private final double servedQuantity;
+    private double servedQuantity;
     private double quantity;
     private double price;
-    private final boolean isLiquid;
+    private boolean isLiquid;
     private boolean canDecrease; // for decrease principal
 
     private double lastOrderedQuantity;
@@ -62,6 +62,9 @@ public class Product {
     public double getServedQuantity() {
         return Math.round((this.servedQuantity)*100.0)/100.0;
     }
+    public void setServedQuantity(double servedQuantity) {
+        this.servedQuantity = Math.round((this.servedQuantity)*100.0)/100.0;
+    }
 
 
     public void setQuantity(double quantity) {
@@ -112,6 +115,10 @@ public class Product {
         } else {
             return "гр.";
         }
+    }
+
+    public void setLiquid(boolean isLiquid) {
+        this.isLiquid = isLiquid;
     }
 
     public boolean isCanDecrease() {

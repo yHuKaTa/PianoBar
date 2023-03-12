@@ -6,11 +6,11 @@ import models.Product;
 import models.User;
 
 import javax.swing.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ManagersHomePanel extends BasePanel{
-    public ManagersHomePanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories) {
+    public ManagersHomePanel(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders, Map<Integer, List<Order>> histories) {
         super(frame);
 
         JButton tablesButton = new JButton("Поръчки");

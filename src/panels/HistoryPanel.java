@@ -8,12 +8,12 @@ import models.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class HistoryPanel extends BasePanel implements ActionListener {
     private final User loggedUser;
-    public HistoryPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders,Map<Integer, ArrayList<Order>> histories) {
+    public HistoryPanel(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders, Map<Integer, List<Order>> histories) {
         super(frame);
         this.loggedUser = loggedUser;
         JButton backButton = new JButton("Назад");
@@ -24,7 +24,7 @@ public class HistoryPanel extends BasePanel implements ActionListener {
 
         int buttonX = 45;
         int buttonY = frame.getHeight() - 160;
-        for (Map.Entry<Integer, ArrayList<Order>> ordersHistory : histories.entrySet()){
+        for (Map.Entry<Integer, List<Order>> ordersHistory : histories.entrySet()){
             if (ordersHistory.getKey() == 11){
                 buttonX = 45;
                 buttonY = frame.getHeight() - 100;

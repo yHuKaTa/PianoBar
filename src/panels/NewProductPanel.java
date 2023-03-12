@@ -5,11 +5,11 @@ import models.Product;
 import models.User;
 
 import javax.swing.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class NewProductPanel extends BasePanel{
-    public NewProductPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
+    public NewProductPanel(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders) {
         super(frame);
 
         JButton backButton = new JButton("Назад");

@@ -2,10 +2,10 @@ package panels;
 
 import database.Help;
 import frames.BarFrame;
-import models.User;
 
 import javax.swing.*;
 import java.awt.*;
+
 
 public class BasePanel extends JPanel {
     public final BarFrame frame;

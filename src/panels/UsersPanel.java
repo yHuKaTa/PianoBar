@@ -13,18 +13,18 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class UsersPanel extends BasePanel{
     private DefaultTableModel userTableModel = new DefaultTableModel();
     private int currentlySelectedRow;
     private String pinOfUser;
-    public UsersPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
+    public UsersPanel(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders) {
         super(frame);
         String[] cols = {"Име", "Тип потребител", "Пин", "Телефон"};
-        userTableModel = help.fetchUsers(userTableModel);
         userTableModel.setColumnIdentifiers(cols);
+        userTableModel = help.fetchUsers(userTableModel);
 
         JTable table = new JTable(userTableModel){
             @Override

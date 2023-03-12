@@ -1,16 +1,16 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class Order {
     private final double givenAmount;
     private final User waiter;
     private final Calendar dateOfOrder;
-    private final ArrayList<Product> orderedProducts;
+    private final List<Product> orderedProducts;
     private final String methodOfPay;
 
-    public Order(double givenAmount, User waiter, ArrayList<Product> orderedProducts, String methodOfPay) {
+    public Order(double givenAmount, User waiter, List<Product> orderedProducts, String methodOfPay) {
         this.givenAmount = givenAmount;
         this.waiter = waiter;
         this.dateOfOrder = Calendar.getInstance();
@@ -30,7 +30,7 @@ public class Order {
         return dateOfOrder;
     }
 
-    public ArrayList<Product> getOrderedProducts() {
+    public List<Product> getOrderedProducts() {
         return orderedProducts;
     }
 

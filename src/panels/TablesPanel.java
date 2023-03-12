@@ -7,13 +7,13 @@ import models.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class TablesPanel extends BasePanel implements ActionListener {
     private final User loggedUser;
 
-    public TablesPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
+    public TablesPanel(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders) {
         super(frame);
         this.loggedUser = loggedUser;
 
@@ -28,7 +28,7 @@ public class TablesPanel extends BasePanel implements ActionListener {
 
             int buttonX = 45;
             int buttonY = frame.getHeight() - 160;
-            for (Map.Entry<Integer, ArrayList<Product>> order : orders.entrySet()){
+            for (Map.Entry<Integer, List<Product>> order : orders.entrySet()){
                 if (order.getKey() == 11){
                     buttonX = 45;
                     buttonY = frame.getHeight() - 100;

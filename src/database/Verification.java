@@ -17,7 +17,7 @@ public class Verification {
         return loggedUser;
     }
 
-    public boolean isTableOpened(int tableNumber, LinkedHashMap<Integer,User> workingUsers, User loggedUser, Map<Integer,ArrayList<Product>> orders) {
+    public boolean isTableOpened(int tableNumber, Map<Integer,User> workingUsers, User loggedUser, Map<Integer,List<Product>> orders) {
         boolean isOpened = false;
         if (Objects.isNull(workingUsers.get(tableNumber))) {
             isOpened = true;
@@ -55,7 +55,7 @@ boolean isDeletingHimSelf(String pin, User user) {
         return user.getPinCode().equals(pin);
 }
 
-    boolean isPinDubt(String pin, ArrayList<User> users) {
+    boolean isPinDubt(String pin, List<User> users) {
         boolean isDubt = false;
         for (User user : users) {
             if (user.getPinCode().equalsIgnoreCase(pin)) {
@@ -65,7 +65,7 @@ boolean isDeletingHimSelf(String pin, User user) {
         }
         return isDubt;
     }
-    boolean isNameDubt(String fullName, ArrayList<User> users){
+    boolean isNameDubt(String fullName, List<User> users){
         boolean isDubt = false;
         for (User user : users) {
             if (user.getUserName().equalsIgnoreCase(fullName)) {
@@ -75,7 +75,7 @@ boolean isDeletingHimSelf(String pin, User user) {
         }
         return isDubt;
     }
-    boolean isPhoneNumberDubt(String phoneNumber, ArrayList<User> users) {
+    boolean isPhoneNumberDubt(String phoneNumber, List<User> users) {
         boolean isDubt = false;
         for (User user : users) {
             if (user.getPhoneNumber().equalsIgnoreCase(phoneNumber)) {

@@ -11,7 +11,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DeliveryPanel extends BasePanel {
@@ -20,13 +20,13 @@ public class DeliveryPanel extends BasePanel {
     private int currentlySelectedRow;
     private String nameOfProduct;
 
-    public DeliveryPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders) {
+    public DeliveryPanel(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders) {
         super(frame);
         this.loggedUser = loggedUser;
 
         String[] cols = {"Категория", "Подкатегория", "Име", "Цена", "Количество"};
-        productsTableModel = help.fetchDeliveryProducts(productsTableModel);
         productsTableModel.setColumnIdentifiers(cols);
+        productsTableModel = help.fetchDeliveryProducts(productsTableModel);
 
         JTable table = new JTable(productsTableModel){
             @Override
@@ -84,7 +84,7 @@ public class DeliveryPanel extends BasePanel {
         add(backButton);
 
         if (loggedUser.getType() == UserType.OWNER) {
-            JButton deleteButton = new JButton("Изтрий");
+            JButton deleteButton = new JButton("Изтрий ");
             deleteButton.setBounds(backButton.getX() + 150, frame.getHeight() - 80, 120, 30);
             deleteButton.setHorizontalAlignment(SwingConstants.CENTER);
             deleteButton.addActionListener(e -> {
@@ -92,19 +92,20 @@ public class DeliveryPanel extends BasePanel {
                 productsTableModel = help.fetchDeliveryProducts(productsTableModel);
             });
             add(deleteButton);
+
+
+            JButton modifyButton = new JButton("Промени");
+            modifyButton.setBounds(backButton.getX() + 300, frame.getHeight() - 80, 120, 30);
+            modifyButton.setHorizontalAlignment(SwingConstants.CENTER);
+            modifyButton.addActionListener(e -> {
+                help.modifyProduct(nameOfProduct);
+                productsTableModel = help.fetchDeliveryProducts(productsTableModel);
+            });
+            add(modifyButton);
         }
 
-        JButton modifyButton = new JButton("Промени");
-        modifyButton.setBounds(backButton.getX() + 300, frame.getHeight() - 80, 120, 30);
-        modifyButton.setHorizontalAlignment(SwingConstants.CENTER);
-        modifyButton.addActionListener(e -> {
-            help.modifyProduct(nameOfProduct);
-            productsTableModel = help.fetchDeliveryProducts(productsTableModel);
-        });
-        add(modifyButton);
-
         JButton deliveryButton = new JButton("Доставка");
-        deliveryButton.setBounds(modifyButton.getX() + 150, frame.getHeight() - 80, 120, 30);
+        deliveryButton.setBounds(backButton.getX() + 450, frame.getHeight() - 80, 120, 30);
         deliveryButton.setHorizontalAlignment(SwingConstants.CENTER);
         deliveryButton.addActionListener(e -> {
             help.deliveryOfProduct(nameOfProduct);

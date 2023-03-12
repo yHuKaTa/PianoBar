@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class OrderedProductPanel extends HistoryPanel{
@@ -17,7 +17,7 @@ public class OrderedProductPanel extends HistoryPanel{
     private String workingUser;
     private DefaultTableModel ordersTableModel = new DefaultTableModel();
     private DefaultTableModel productsTableModel = new DefaultTableModel();
-    public OrderedProductPanel(BarFrame frame, User loggedUser, Map<Integer, ArrayList<Product>> orders, Map<Integer, ArrayList<Order>> histories, int tableNumber) {
+    public OrderedProductPanel(BarFrame frame, User loggedUser, Map<Integer, List<Product>> orders, Map<Integer, List<Order>> histories, int tableNumber) {
         super(frame, loggedUser, orders, histories);
 
         JLabel waiterLabel = new JLabel(" Маса: " + tableNumber);
@@ -26,8 +26,8 @@ public class OrderedProductPanel extends HistoryPanel{
         add(waiterLabel);
 
         String[] cols = {"№ на поръчка", "Дата и час", "Сервитьор", "Метод на плащане", "Сума", "Взети пари"};
-        ordersTableModel = help.fetchOrdersHistory(ordersTableModel, tableNumber);
         ordersTableModel.setColumnIdentifiers(cols);
+        ordersTableModel = help.fetchOrdersHistory(ordersTableModel, tableNumber);
         JTable ordersTable = new JTable(ordersTableModel){
             @Override
             public boolean isCellEditable(int i, int b) {
@@ -51,7 +51,6 @@ public class OrderedProductPanel extends HistoryPanel{
                     frame.router.showError("Не сте избрали поръчка!");
                 } else {
                     JScrollPane productsTablePanel = productsTablePane(selectedOrder, tableNumber);
-                    add(productsTablePanel);
                     remove(productsTablePanel);
                     add(productsTablePanel);
                 }
@@ -65,8 +64,9 @@ public class OrderedProductPanel extends HistoryPanel{
 
     private JScrollPane productsTablePane(int selectedOrder, int tableNumber) {
         String[] cols = {"Продукт", "Количество", "Цена"};
-        productsTableModel = help.fetchProductsOfOrdersHistory(productsTableModel, selectedOrder, tableNumber);
         productsTableModel.setColumnIdentifiers(cols);
+        productsTableModel = help.fetchProductsOfOrdersHistory(productsTableModel, selectedOrder, tableNumber);
+
         JTable productsTable = new JTable(productsTableModel){
             @Override
             public boolean isCellEditable(int i, int b) {
