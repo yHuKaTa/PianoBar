@@ -6,7 +6,8 @@ public enum ProductType {
     FOOD("Храни"),
     COCKTAIL("Коктейли");
     public final String label;
-    ProductType(String label){
+
+    ProductType(String label) {
         this.label = label;
     }
 }
