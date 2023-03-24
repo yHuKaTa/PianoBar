@@ -2,6 +2,7 @@ package database;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import frames.BarFrame;
 import frames.BarRouter;
@@ -236,7 +237,9 @@ public class Help {
             JOptionPane.showMessageDialog(null, "Не сте избрали потребител", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        int i = 0;
         for (User user : users) {
+            i++;
             if (pinOfUser.equals(user.getPinCode())) {
                 int result = JOptionPane.showConfirmDialog(null, "Сигурни ли сте в изтриването на служителя?");
                 if (result == JOptionPane.YES_OPTION) {
@@ -244,8 +247,8 @@ public class Help {
                         JOptionPane.showMessageDialog(null, "Не може да изтриете себе си", "Непозволено действие", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else {
-                        users.remove(user);
-                        searchedUsers.remove(user);
+                        users.remove(i-1);
+                        searchedUsers.remove(i-1);
                         JOptionPane.showMessageDialog(null, "Успешно изтрит потребител!", "Изтрит е!", JOptionPane.INFORMATION_MESSAGE);
                         break;
                     }
@@ -500,6 +503,7 @@ public class Help {
 
     public void deleteProduct(String nameOfProduct) {
         int count = 0;
+        int i = 0;
         if (nameOfProduct == null || nameOfProduct.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Не сте избрали артикул!", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
             return;
@@ -507,10 +511,11 @@ public class Help {
         int result = JOptionPane.showConfirmDialog(null, "Сигурни ли сте в изтриването на артикула?");
         if (result == JOptionPane.YES_OPTION) {
             for (Product product : products) {
+                i++;
                 if (product.getBrandName().equalsIgnoreCase(nameOfProduct)) {
                     count++;
-                    products.remove(product);
-                    searchedProducts.remove(product);
+                    products.remove(i - 1);
+                    searchedProducts.remove(i - 1);
                     break;
                 }
             }
@@ -538,8 +543,8 @@ public class Help {
                 switch (JOptionPane.showOptionDialog(null, "Какво ще се променя", "Избери какво ще се променя",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null)) {
                     case 0: {
-                        product.setType(JOptionPane.showOptionDialog(null, "Избери тип потребител", "Тип потребител",
-                                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, productType, options[3]));
+                        product.setType(verification.getProductType(JOptionPane.showOptionDialog(null, "Избери тип потребител", "Тип потребител",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, productType, options[3])));
                         break;
                     }
                     case 1: {
@@ -651,7 +656,33 @@ public class Help {
         }
     }
 
+    public boolean isNewProductOk(int productType, String subType, String brandName, String servedQuantity, String price) {
+        if (!Objects.nonNull(verification.getProductType(productType))) {
+            JOptionPane.showMessageDialog(null, "Не сте избрали правилна категория продукт!", "Невалиден избор", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (subType.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи подкатегория на продукт", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (brandName.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Не може да се въведе празен ред", "Въведи име на продукт", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (verification.isProductNameDubt(brandName, products)) {
+            JOptionPane.showMessageDialog(null, "Не може да въведете дублиращ продукт", "Въведи ново име на продукт", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (servedQuantity.isEmpty() || !Pattern.matches("^(\\d+(\\.\\d+)?)", servedQuantity)) {
+            JOptionPane.showMessageDialog(null, "Моля въведете правилно количество на продукт, което ще се сервира. (0.05 = 50мл/гр)", "Въведи ново количество", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (price.isEmpty() || !Pattern.matches("^(\\d+(\\.\\d+)?)", price)) {
+            JOptionPane.showMessageDialog(null, "Моля въведете правилна цена за продукт", "Въведи нова цена", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else {
+            return true;
+        }
+    }
 
-
-
+    public void addNewProduct(int productType, String subType, String brandName, double servedQuantity, double price, boolean isLiquid) {
+        Product product = new Product(verification.getProductType(productType), subType, brandName, servedQuantity, 0.00, price, isLiquid);
+        products.add(product);
+        searchedProducts.add((product));
+    }
 }

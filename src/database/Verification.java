@@ -1,6 +1,7 @@
 package database;
 
 import models.Product;
+import models.ProductType;
 import models.User;
 import models.UserType;
 
@@ -79,6 +80,31 @@ boolean isDeletingHimSelf(String pin, User user) {
         boolean isDubt = false;
         for (User user : users) {
             if (user.getPhoneNumber().equalsIgnoreCase(phoneNumber)) {
+                isDubt = true;
+                break;
+            }
+        }
+        return isDubt;
+    }
+
+    ProductType getProductType(int type) {
+        if (type == 0) {
+            return ProductType.ALCOHOLIC;
+        } else if (type == 1) {
+            return ProductType.NONALCOHOLIC;
+        } else if (type == 2) {
+            return ProductType.FOOD;
+        } else if (type == 3) {
+            return ProductType.COCKTAIL;
+        } else {
+            return null;
+        }
+    }
+
+    boolean isProductNameDubt(String productName, List<Product> products) {
+        boolean isDubt = false;
+        for (Product product : products) {
+            if (product.getBrandName().equalsIgnoreCase(productName)) {
                 isDubt = true;
                 break;
             }
