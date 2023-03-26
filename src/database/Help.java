@@ -184,8 +184,11 @@ public class Help {
                         if (pinOfUser.equals(loggedUser.getPinCode()) || user.getType() == UserType.OWNER) {
                             JOptionPane.showMessageDialog(null, "Не може да променяте типа си", "Вие сте собственик", JOptionPane.ERROR_MESSAGE);
                         } else {
-                            user.setType(JOptionPane.showOptionDialog(null, "Избери тип потребител", "Тип потребител",
+                            UserType type = verification.getUserType(JOptionPane.showOptionDialog(null, "Избери тип потребител", "Тип потребител",
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, userType, options[0]));
+                            if (type != null) {
+                                user.setType(type);
+                            }
                         }
                         break;
                     case 2:
@@ -452,8 +455,8 @@ public class Help {
                     row[2] = String.format("%,.2f", product.getTotalPrice()) + " лв.";
                     productsHistoryTable.addRow(row);
                 }
+                break;
             }
-            break;
         }
         return productsHistoryTable;
     }
@@ -543,8 +546,11 @@ public class Help {
                 switch (JOptionPane.showOptionDialog(null, "Какво ще се променя", "Избери какво ще се променя",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null)) {
                     case 0: {
-                        product.setType(verification.getProductType(JOptionPane.showOptionDialog(null, "Избери тип потребител", "Тип потребител",
-                                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, productType, options[3])));
+                        ProductType type = verification.getProductType(JOptionPane.showOptionDialog(null, "Избери тип категория", "Тип категория",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, productType, options[3]));
+                        if (type != null) {
+                            product.setType(type);
+                        }
                         break;
                     }
                     case 1: {

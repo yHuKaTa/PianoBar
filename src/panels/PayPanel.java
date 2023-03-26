@@ -26,7 +26,7 @@ public class PayPanel extends BasePanel {
     private JTextField refundCashTextField;
     private double bill;
     private int discount;
-    private JTextField discountTextField = new JTextField("0.00");
+    private JTextField discountTextField = new JTextField("0");
 
     public PayPanel(BarFrame frame, int tableNumber, User loggedUser, Map<Integer, List<Product>> orders) {
         super(frame);
@@ -105,7 +105,7 @@ public class PayPanel extends BasePanel {
         discountTextField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (discountTextField.getText().equals("0.00")){
+                if (discountTextField.getText().equals("0")){
                     discountTextField.setText("");
                 }
             }
@@ -113,7 +113,7 @@ public class PayPanel extends BasePanel {
             @Override
             public void focusLost(FocusEvent e) {
                 if (discountTextField.getText().equals("")){
-                    discountTextField.setText("0.00");
+                    discountTextField.setText("0");
                 }
             }
         });
@@ -123,7 +123,7 @@ public class PayPanel extends BasePanel {
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
                 char key = e.getKeyChar();
-                if (!((Character.isDigit(key)) || key == KeyEvent.VK_BACK_SPACE || key == KeyEvent.VK_DELETE || key == '.'))
+                if (!((Character.isDigit(key)) || key == KeyEvent.VK_BACK_SPACE || key == KeyEvent.VK_DELETE))
                     e.consume();
             }
         });

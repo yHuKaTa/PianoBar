@@ -87,6 +87,15 @@ boolean isDeletingHimSelf(String pin, User user) {
         return isDubt;
     }
 
+    UserType getUserType(int type) {
+        if (type == 0) {
+            return UserType.WAITRESS;
+        } else if (type == 1) {
+            return UserType.MANAGER;
+        } else {
+            return null;
+        }
+    }
     ProductType getProductType(int type) {
         if (type == 0) {
             return ProductType.ALCOHOLIC;

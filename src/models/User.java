@@ -43,12 +43,8 @@ public class User {
         return type;
     }
 
-    public void setType(int type) {
-        if (type == 0) {
-            this.type = UserType.WAITRESS;
-        } else if (type == 1) {
-            this.type = UserType.MANAGER;
-        }
+    public void setType(UserType type) {
+            this.type = type;
     }
-    }
+}
 
