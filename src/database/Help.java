@@ -44,14 +44,22 @@ public class Help {
 
     public void loginSelect(String pin, BarFrame frame) {
         router = frame.router;
-        if (verification.loggedUser(pin, users).getType() == UserType.MANAGER) {
-            router.showManagersHomePanel(verification.loggedUser(pin, users), orders, histories);
-        } else if (verification.loggedUser(pin, users).getType() == UserType.OWNER) {
-            router.showOwnersPanel(verification.loggedUser(pin, users), orders, histories);
-        } else if (verification.loggedUser(pin, users).getType() == UserType.WAITRESS) {
-            router.showTablesPanel(verification.loggedUser(pin, users), orders);
-        } else {
-            frame.router.showError("Грешна парола. Моля въведете вашата парола отново!");
+        switch (verification.loggedUser(pin, users).getType()) {
+            case WAITRESS : {
+                router.showTablesPanel(verification.loggedUser(pin, users), orders);
+                break;
+            }
+            case MANAGER : {
+                router.showManagersHomePanel(verification.loggedUser(pin, users), orders, histories);
+                break;
+            }
+            case OWNER : {
+                router.showOwnersPanel(verification.loggedUser(pin, users), orders, histories);
+                break;
+            }
+            default : {
+                frame.router.showError("Грешна парола. Моля въведете вашата парола отново!");
+            }
         }
     }
 
@@ -415,10 +423,14 @@ public class Help {
         return new Order(givenAmount, waiter, orderedProducts, methodOfPay);
     }
 
-    public void moveOrder(int oldTableNumber, int newTableNumber) {
+    public boolean moveOrder(int oldTableNumber, int newTableNumber) {
+        if (!orders.get(newTableNumber).isEmpty()) {
+            return false;
+        }
         List<Product> movingOrder = new ArrayList<>(orders.get(oldTableNumber));
         orders.replace(oldTableNumber, new ArrayList<>());
         orders.replace(newTableNumber, movingOrder);
+        return true;
     }
 
     public void finishOrder(double givenAmount, User waiter, List<Product> orderedProducts, String methodOfPay) {

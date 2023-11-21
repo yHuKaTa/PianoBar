@@ -37,7 +37,9 @@ public class OrdersPanel extends TablesPanel{
         moveOrder.setHorizontalAlignment(SwingConstants.CENTER);
         moveOrder.addActionListener(e -> {
             if (showQuestionPopup("Желаете ли да преместите поръчката на друга маса?")) {
-                help.moveOrder(this.tableNumber,help.verification.isValidNewTableNumber());
+                if (!help.moveOrder(this.tableNumber,help.verification.isValidNewTableNumber())) {
+                    JOptionPane.showMessageDialog(null, "Не може да преместите поръчката! Масата вече е заета.");
+                }
                 orderTableModel = help.fetchOrderedProducts(orderTableModel);
                 repaint();
             }
