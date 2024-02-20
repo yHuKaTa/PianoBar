@@ -1,13 +1,16 @@
 # PianoBar
 This is my first GUI project! C'mon test it :)
 
-The application provides the user with an intuitive graphical environment for the operation of a POS system in a night club or bar. The interface is in Bulgarian.
+The application provides the user with an intuitive graphical environment for the operation of a POS system in a night club or bar.
+The interface is in Bulgarian.
 
 There is a division of the products offered by categories and subcategories. In the order, the offered quantity can be changed, an order can be deleted, the corresponding order can be paid, etc., as it happens in a real environment.
 
 There are separate functionalities for waiter, manager and bar owner. Accordingly, the waiter can fulfill orders for the customers, the manager can adjust the quantities and carry out the delivery of the necessary products, and the owner can do absolutely everything, even adding, modifying and removing users in the application.
 
+
 The starting point in the application is entering the PIN of the respective user. Examples are the following users:
+
 Waiter: 0000 or 0202
 Manager: 0101
 Owner: 2525
