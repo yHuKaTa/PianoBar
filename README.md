@@ -9,10 +9,13 @@ There is a division of the products offered by categories and subcategories. In 
 There are separate functionalities for waiter, manager and bar owner. Accordingly, the waiter can fulfill orders for the customers, the manager can adjust the quantities and carry out the delivery of the necessary products, and the owner can do absolutely everything, even adding, modifying and removing users in the application.
 
 
-The starting point in the application is entering the PIN of the respective user. Examples are the following users:
+The starting point in the application is entering the PIN of the respective user.
+Examples are the following users:
 
 Waiter: 0000 or 0202
+
 Manager: 0101
+
 Owner: 2525
 
 The order generation logic is to select a table number to start with. In this case, from 1 to 20. Select the relevant products, bearing in mind that each subsequent press of the same button will increase the quantity of the desired product.
