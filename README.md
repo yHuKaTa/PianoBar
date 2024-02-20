@@ -8,8 +8,8 @@ There is a division of the products offered by categories and subcategories. In 
 
 There are separate functionalities for waiter, manager and bar owner. Accordingly, the waiter can fulfill orders for the customers, the manager can adjust the quantities and carry out the delivery of the necessary products, and the owner can do absolutely everything, even adding, modifying and removing users in the application.
 
-
 The starting point in the application is entering the PIN of the respective user.
+
 Examples are the following users:
 
 Waiter: 0000 or 0202
